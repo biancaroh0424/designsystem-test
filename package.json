@@ -2,9 +2,12 @@
   "name": "designsystem-test",
   "version": "1.0.0",
   "description": "Design system tokens — Figma ↔ GitHub bidirectional sync",
+  "type": "module",
   "scripts": {
     "build:tokens": "style-dictionary build --config style-dictionary.config.js",
-    "watch:tokens": "style-dictionary build --config style-dictionary.config.js --watch"
+    "watch:tokens": "style-dictionary build --config style-dictionary.config.js --watch",
+    "sync:from-figma": "node scripts/figma-to-tokens.js",
+    "sync:to-figma": "node scripts/tokens-to-figma.js"
   },
   "devDependencies": {
     "style-dictionary": "^4.0.0"

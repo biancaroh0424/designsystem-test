@@ -1,0 +1,26 @@
+name: Sync tokens → Figma
+
+on:
+  push:
+    branches:
+      - design/tokens
+    paths:
+      - "tokens/**"
+
+jobs:
+  sync-to-figma:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: design/tokens
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Update Figma variables
+        env:
+          FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
+          FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+        run: node scripts/tokens-to-figma.js
