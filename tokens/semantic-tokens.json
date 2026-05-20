@@ -126,5 +126,29 @@
         "type": "alias"
       }
     }
+  },
+  "label": {
+    "button": {
+      "white": {
+        "value": "{color.neutral.0}",
+        "type": "alias"
+      },
+      "brand": {
+        "value": "{color.text.brand}",
+        "type": "alias"
+      },
+      "brand-disabled": {
+        "value": "{color.brand.200}",
+        "type": "alias"
+      },
+      "text-secondary": {
+        "value": "{color.neutral.900}",
+        "type": "alias"
+      },
+      "text-secondary-disabled": {
+        "value": "{color.neutral.300}",
+        "type": "alias"
+      }
+    }
   }
 }
