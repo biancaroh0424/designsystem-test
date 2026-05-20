@@ -1,0 +1,56 @@
+{
+  "General": [
+    {
+      "name": "Button",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT_SET",
+      "variants": [
+        {
+          "name": "type",
+          "values": [
+            "destructive",
+            "ghost",
+            "primary",
+            "secondary",
+            "iconLeft",
+            "iconRight"
+          ]
+        },
+        {
+          "name": "status",
+          "values": [
+            "Default",
+            "disabled"
+          ]
+        }
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "VARIANT",
+          "defaultValue": "primary",
+          "variantOptions": [
+            "destructive",
+            "ghost",
+            "primary",
+            "secondary",
+            "iconLeft",
+            "iconRight"
+          ]
+        },
+        {
+          "name": "status",
+          "type": "VARIANT",
+          "defaultValue": "Default",
+          "variantOptions": [
+            "Default",
+            "disabled"
+          ]
+        }
+      ],
+      "width": 814,
+      "height": 154
+    }
+  ]
+}
