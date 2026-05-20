@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design System Preview</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f9fafb;
+    --surface: #ffffff;
+    --border: #e5e7eb;
+    --text: #111827;
+    --text-2: #6b7280;
+    --text-3: #9ca3af;
+    --brand: #6366f1;
+    --radius: 10px;
+  }
+
+  body {
+    font-family: Inter, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* ── 헤더 ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .header-left h1 { font-size: 16px; font-weight: 700; }
+  .header-left p  { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+  .stats { display: flex; gap: 20px; }
+  .stat { text-align: center; }
+  .stat .num { font-size: 20px; font-weight: 700; color: var(--brand); }
+  .stat .label { font-size: 11px; color: var(--text-3); }
+
+  /* ── 본문 ── */
+  .main { max-width: 1100px; margin: 0 auto; padding: 32px; }
+
+  /* ── 섹션 ── */
+  .collection {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .collection-title {
+    font-size: 14px; font-weight: 600; margin-bottom: 16px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .collection-title::before {
+    content: ""; display: block;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--brand);
+  }
+
+  /* ── 컬러 그리드 ── */
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .color-card { border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+  .color-swatch { height: 60px; }
+  .color-info { padding: 8px; }
+  .token-name  { display: block; font-weight: 600; font-size: 11px; }
+  .token-path  { display: block; font-size: 10px; color: var(--text-3); margin: 2px 0; }
+  .token-value { display: block; font-size: 10px; color: var(--text-2); font-family: monospace; }
+
+  /* ── 테이블 ── */
+  .token-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .token-table th {
+    text-align: left; padding: 8px 12px;
+    background: var(--bg); color: var(--text-2);
+    font-size: 11px; font-weight: 500;
+    border-bottom: 1px solid var(--border);
+  }
+  .token-table td {
+    padding: 8px 12px; border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+  }
+  .token-table tr:last-child td { border-bottom: none; }
+  code { font-size: 11px; color: var(--brand); background: #eef2ff; padding: 2px 5px; border-radius: 4px; }
+
+  .radius-preview {
+    display: inline-block; width: 28px; height: 28px;
+    background: var(--brand); opacity: .25;
+    margin-right: 8px; vertical-align: middle;
+  }
+  .spacing-bar {
+    display: inline-block; height: 10px; max-width: 200px;
+    background: #c7d2fe; border-radius: 2px;
+    margin-right: 8px; vertical-align: middle;
+  }
+  .val-text { vertical-align: middle; }
+
+  /* ── 배지 ── */
+  .type-badge {
+    display: inline-block; padding: 2px 7px; border-radius: 99px;
+    font-size: 10px; font-weight: 500;
+  }
+  .type-color       { background: #fce7f3; color: #9d174d; }
+  .type-spacing     { background: #dcfce7; color: #166534; }
+  .type-borderRadius{ background: #fef9c3; color: #854d0e; }
+  .type-fontSizes   { background: #e0f2fe; color: #075985; }
+  .type-fontWeights { background: #ede9fe; color: #4c1d95; }
+  .type-number      { background: #f3f4f6; color: #374151; }
+  .type-string      { background: #fff7ed; color: #9a3412; }
+  .type-alias       { background: #f0fdf4; color: #14532d; }
+
+  /* ── 푸터 ── */
+  .footer {
+    text-align: center; padding: 24px;
+    color: var(--text-3); font-size: 11px;
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <h1>Design System Preview</h1>
+    <p>biancaroh0424/designsystem-test · design/tokens · 2026. 5. 20. PM 6:24:13 기준</p>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="num">185</div>
+      <div class="label">Tokens</div>
+    </div>
+    <div class="stat">
+      <div class="num">12</div>
+      <div class="label">Collections</div>
+    </div>
+    <div class="stat">
+      <div class="num">63</div>
+      <div class="label">Colors</div>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <section class="collection">
+    <h2 class="collection-title">border-radius</h2><table class="token-table">
+      <thead><tr><th>Token</th><th>Value</th><th>Type</th></tr></thead>
+      <tbody><tr>
+        <td><code>radius.none</code></td>
+        <td><span class="radius-preview" style="border-radius:0px"></span><span class="val-text">0</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>radius.xs</code></td>
+        <td><span class="radius-preview" style="border-radius:2px"></span><span class="val-text">2</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>radius.sm</code></td>
+        <td><span class="radius-preview" style="border-radius:4px"></span><span class="val-text">4</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>radius.md</code></td>
+        <td><span class="radius-preview" style="border-radius:6px"></span><span class="val-text">6</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>radius.lg</code></td>
+        <td><span class="radius-preview" style="border-radius:8px"></span><span class="val-text">8</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>radius.xl</code></td>
+        <td><span class="radius-preview" style="border-radius:12px"></span><span class="val-text">12</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>radius.2xl</code></td>
+        <td><span class="radius-preview" style="border-radius:16px"></span><span class="val-text">16</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>radius.3xl</code></td>
+        <td><span class="radius-preview" style="border-radius:24px"></span><span class="val-text">24</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>radius.full</code></td>
+        <td><span class="radius-preview" style="border-radius:9999px"></span><span class="val-text">9999</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr></tbody></table></section>
+<section class="collection">
+    <h2 class="collection-title">components</h2></section>
+<section class="collection">
+    <h2 class="collection-title">global/color</h2><div class="color-grid"><div class="color-card">
+        <div class="color-swatch" style="background:#f0f4ff"></div>
+        <div class="color-info">
+          <span class="token-name">50</span>
+          <span class="token-path">color.brand.50</span>
+          <span class="token-value">#f0f4ff</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#e0eaff"></div>
+        <div class="color-info">
+          <span class="token-name">100</span>
+          <span class="token-path">color.brand.100</span>
+          <span class="token-value">#e0eaff</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#c7d7fe"></div>
+        <div class="color-info">
+          <span class="token-name">200</span>
+          <span class="token-path">color.brand.200</span>
+          <span class="token-value">#c7d7fe</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#a4bcfd"></div>
+        <div class="color-info">
+          <span class="token-name">300</span>
+          <span class="token-path">color.brand.300</span>
+          <span class="token-value">#a4bcfd</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#8098fb"></div>
+        <div class="color-info">
+          <span class="token-name">400</span>
+          <span class="token-path">color.brand.400</span>
+          <span class="token-value">#8098fb</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#6172f3"></div>
+        <div class="color-info">
+          <span class="token-name">500</span>
+          <span class="token-path">color.brand.500</span>
+          <span class="token-value">#6172f3</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#444ce7"></div>
+        <div class="color-info">
+          <span class="token-name">600</span>
+          <span class="token-path">color.brand.600</span>
+          <span class="token-value">#444ce7</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#3538cd"></div>
+        <div class="color-info">
+          <span class="token-name">700</span>
+          <span class="token-path">color.brand.700</span>
+          <span class="token-value">#3538cd</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#2d31a6"></div>
+        <div class="color-info">
+          <span class="token-name">800</span>
+          <span class="token-path">color.brand.800</span>
+          <span class="token-value">#2d31a6</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#2d3282"></div>
+        <div class="color-info">
+          <span class="token-name">900</span>
+          <span class="token-path">color.brand.900</span>
+          <span class="token-value">#2d3282</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#ffffff"></div>
+        <div class="color-info">
+          <span class="token-name">0</span>
+          <span class="token-path">color.neutral.0</span>
+          <span class="token-value">#ffffff</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#f9fafb"></div>
+        <div class="color-info">
+          <span class="token-name">50</span>
+          <span class="token-path">color.neutral.50</span>
+          <span class="token-value">#f9fafb</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#f2f4f7"></div>
+        <div class="color-info">
+          <span class="token-name">100</span>
+          <span class="token-path">color.neutral.100</span>
+          <span class="token-value">#f2f4f7</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#e4e7ec"></div>
+        <div class="color-info">
+          <span class="token-name">200</span>
+          <span class="token-path">color.neutral.200</span>
+          <span class="token-value">#e4e7ec</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#d0d5dd"></div>
+        <div class="color-info">
+          <span class="token-name">300</span>
+          <span class="token-path">color.neutral.300</span>
+          <span class="token-value">#d0d5dd</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#98a2b3"></div>
+        <div class="color-info">
+          <span class="token-name">400</span>
+          <span class="token-path">color.neutral.400</span>
+          <span class="token-value">#98a2b3</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#667085"></div>
+        <div class="color-info">
+          <span class="token-name">500</span>
+          <span class="token-path">color.neutral.500</span>
+          <span class="token-value">#667085</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#475467"></div>
+        <div class="color-info">
+          <span class="token-name">600</span>
+          <span class="token-path">color.neutral.600</span>
+          <span class="token-value">#475467</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#344054"></div>
+        <div class="color-info">
+          <span class="token-name">700</span>
+          <span class="token-path">color.neutral.700</span>
+          <span class="token-value">#344054</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#1d2939"></div>
+        <div class="color-info">
+          <span class="token-name">800</span>
+          <span class="token-path">color.neutral.800</span>
+          <span class="token-value">#1d2939</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#101828"></div>
+        <div class="color-info">
+          <span class="token-name">900</span>
+          <span class="token-path">color.neutral.900</span>
+          <span class="token-value">#101828</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#ecfdf3"></div>
+        <div class="color-info">
+          <span class="token-name">50</span>
+          <span class="token-path">color.success.50</span>
+          <span class="token-value">#ecfdf3</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#12b76a"></div>
+        <div class="color-info">
+          <span class="token-name">500</span>
+          <span class="token-path">color.success.500</span>
+          <span class="token-value">#12b76a</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#027a48"></div>
+        <div class="color-info">
+          <span class="token-name">700</span>
+          <span class="token-path">color.success.700</span>
+          <span class="token-value">#027a48</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#fffaeb"></div>
+        <div class="color-info">
+          <span class="token-name">50</span>
+          <span class="token-path">color.warning.50</span>
+          <span class="token-value">#fffaeb</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#f79009"></div>
+        <div class="color-info">
+          <span class="token-name">500</span>
+          <span class="token-path">color.warning.500</span>
+          <span class="token-value">#f79009</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#b54708"></div>
+        <div class="color-info">
+          <span class="token-name">700</span>
+          <span class="token-path">color.warning.700</span>
+          <span class="token-value">#b54708</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#fef3f2"></div>
+        <div class="color-info">
+          <span class="token-name">50</span>
+          <span class="token-path">color.error.50</span>
+          <span class="token-value">#fef3f2</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#f04438"></div>
+        <div class="color-info">
+          <span class="token-name">500</span>
+          <span class="token-path">color.error.500</span>
+          <span class="token-value">#f04438</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#b42318"></div>
+        <div class="color-info">
+          <span class="token-name">700</span>
+          <span class="token-path">color.error.700</span>
+          <span class="token-value">#b42318</span>
+        </div>
+      </div></div></section>
+<section class="collection">
+    <h2 class="collection-title">global/radius</h2><table class="token-table">
+      <thead><tr><th>Token</th><th>Value</th><th>Type</th></tr></thead>
+      <tbody><tr>
+        <td><code>borderRadius.none</code></td>
+        <td><span class="radius-preview" style="border-radius:0px"></span><span class="val-text">0</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>borderRadius.xs</code></td>
+        <td><span class="radius-preview" style="border-radius:2px"></span><span class="val-text">2</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>borderRadius.sm</code></td>
+        <td><span class="radius-preview" style="border-radius:4px"></span><span class="val-text">4</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>borderRadius.md</code></td>
+        <td><span class="radius-preview" style="border-radius:8px"></span><span class="val-text">8</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>borderRadius.lg</code></td>
+        <td><span class="radius-preview" style="border-radius:12px"></span><span class="val-text">12</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>borderRadius.xl</code></td>
+        <td><span class="radius-preview" style="border-radius:16px"></span><span class="val-text">16</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>borderRadius.2xl</code></td>
+        <td><span class="radius-preview" style="border-radius:20px"></span><span class="val-text">20</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>borderRadius.3xl</code></td>
+        <td><span class="radius-preview" style="border-radius:24px"></span><span class="val-text">24</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr><tr>
+        <td><code>borderRadius.full</code></td>
+        <td><span class="radius-preview" style="border-radius:9999px"></span><span class="val-text">9999</span></td>
+        <td><span class="type-badge type-borderRadius">borderRadius</span></td>
+      </tr></tbody></table></section>
+<section class="collection">
+    <h2 class="collection-title">global/shadow</h2><table class="token-table">
+      <thead><tr><th>Token</th><th>Value</th><th>Type</th></tr></thead>
+      <tbody><tr>
+        <td><code>boxShadow.xs</code></td>
+        <td><span class="val-text">0px 1px 2px rgba(16, 24, 40, 0.05)</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr><tr>
+        <td><code>boxShadow.sm</code></td>
+        <td><span class="val-text">0px 1px 3px rgba(16, 24, 40, 0.1), 0px 1px 2px rgba(16, 24, 40, 0.06)</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr><tr>
+        <td><code>boxShadow.md</code></td>
+        <td><span class="val-text">0px 4px 8px -2px rgba(16, 24, 40, 0.1), 0px 2px 4px -2px rgba(16, 24, 40, 0.06)</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr><tr>
+        <td><code>boxShadow.lg</code></td>
+        <td><span class="val-text">0px 12px 16px -4px rgba(16, 24, 40, 0.08), 0px 4px 6px -2px rgba(16, 24, 40, 0.03)</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr><tr>
+        <td><code>boxShadow.xl</code></td>
+        <td><span class="val-text">0px 20px 24px -4px rgba(16, 24, 40, 0.08), 0px 8px 8px -4px rgba(16, 24, 40, 0.03)</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr><tr>
+        <td><code>boxShadow.2xl</code></td>
+        <td><span class="val-text">0px 24px 48px -12px rgba(16, 24, 40, 0.18)</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr></tbody></table></section>
+<section class="collection">
+    <h2 class="collection-title">global/spacing</h2><table class="token-table">
+      <thead><tr><th>Token</th><th>Value</th><th>Type</th></tr></thead>
+      <tbody><tr>
+        <td><code>spacing.0</code></td>
+        <td><span class="spacing-bar" style="width:0px"></span><span class="val-text">0</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>spacing.1</code></td>
+        <td><span class="spacing-bar" style="width:4px"></span><span class="val-text">4</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>spacing.2</code></td>
+        <td><span class="spacing-bar" style="width:8px"></span><span class="val-text">8</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>spacing.3</code></td>
+        <td><span class="spacing-bar" style="width:12px"></span><span class="val-text">12</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>spacing.4</code></td>
+        <td><span class="spacing-bar" style="width:16px"></span><span class="val-text">16</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>spacing.5</code></td>
+        <td><span class="spacing-bar" style="width:20px"></span><span class="val-text">20</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>spacing.6</code></td>
+        <td><span class="spacing-bar" style="width:24px"></span><span class="val-text">24</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>spacing.8</code></td>
+        <td><span class="spacing-bar" style="width:32px"></span><span class="val-text">32</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>spacing.10</code></td>
+        <td><span class="spacing-bar" style="width:40px"></span><span class="val-text">40</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>spacing.12</code></td>
+        <td><span class="spacing-bar" style="width:48px"></span><span class="val-text">48</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>spacing.16</code></td>
+        <td><span class="spacing-bar" style="width:64px"></span><span class="val-text">64</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>spacing.20</code></td>
+        <td><span class="spacing-bar" style="width:80px"></span><span class="val-text">80</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>spacing.24</code></td>
+        <td><span class="spacing-bar" style="width:96px"></span><span class="val-text">96</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr></tbody></table></section>
+<section class="collection">
+    <h2 class="collection-title">global/typography</h2><table class="token-table">
+      <thead><tr><th>Token</th><th>Value</th><th>Type</th></tr></thead>
+      <tbody><tr>
+        <td><code>fontFamily.sans</code></td>
+        <td><span class="val-text">Inter, sans-serif</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr><tr>
+        <td><code>fontFamily.mono</code></td>
+        <td><span class="val-text">JetBrains Mono, monospace</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr><tr>
+        <td><code>fontSize.xs</code></td>
+        <td><span class="val-text">12</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>fontSize.sm</code></td>
+        <td><span class="val-text">14</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>fontSize.md</code></td>
+        <td><span class="val-text">16</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>fontSize.lg</code></td>
+        <td><span class="val-text">18</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>fontSize.xl</code></td>
+        <td><span class="val-text">20</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>fontSize.2xl</code></td>
+        <td><span class="val-text">24</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>fontSize.3xl</code></td>
+        <td><span class="val-text">30</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>fontSize.4xl</code></td>
+        <td><span class="val-text">36</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>fontWeight.regular</code></td>
+        <td><span class="val-text">400</span></td>
+        <td><span class="type-badge type-fontWeights">fontWeights</span></td>
+      </tr><tr>
+        <td><code>fontWeight.medium</code></td>
+        <td><span class="val-text">500</span></td>
+        <td><span class="type-badge type-fontWeights">fontWeights</span></td>
+      </tr><tr>
+        <td><code>fontWeight.semibold</code></td>
+        <td><span class="val-text">600</span></td>
+        <td><span class="type-badge type-fontWeights">fontWeights</span></td>
+      </tr><tr>
+        <td><code>fontWeight.bold</code></td>
+        <td><span class="val-text">700</span></td>
+        <td><span class="type-badge type-fontWeights">fontWeights</span></td>
+      </tr><tr>
+        <td><code>lineHeight.tight</code></td>
+        <td><span class="val-text">120%</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr><tr>
+        <td><code>lineHeight.normal</code></td>
+        <td><span class="val-text">150%</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr><tr>
+        <td><code>lineHeight.relaxed</code></td>
+        <td><span class="val-text">160%</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr><tr>
+        <td><code>letterSpacing.tight</code></td>
+        <td><span class="val-text">-0.02em</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr><tr>
+        <td><code>letterSpacing.normal</code></td>
+        <td><span class="val-text">0em</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr><tr>
+        <td><code>letterSpacing.wide</code></td>
+        <td><span class="val-text">0.04em</span></td>
+        <td><span class="type-badge type-string">string</span></td>
+      </tr></tbody></table></section>
+<section class="collection">
+    <h2 class="collection-title">primitive-colors</h2><div class="color-grid"><div class="color-card">
+        <div class="color-swatch" style="background:#f0eeff"></div>
+        <div class="color-info">
+          <span class="token-name">purple-50</span>
+          <span class="token-path">Brand.purple-50</span>
+          <span class="token-value">#f0eeff</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#e0ddff"></div>
+        <div class="color-info">
+          <span class="token-name">purple-100</span>
+          <span class="token-path">Brand.purple-100</span>
+          <span class="token-value">#e0ddff</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#c1bbff"></div>
+        <div class="color-info">
+          <span class="token-name">purple-200</span>
+          <span class="token-path">Brand.purple-200</span>
+          <span class="token-value">#c1bbff</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#a29bff"></div>
+        <div class="color-info">
+          <span class="token-name">purple-300</span>
+          <span class="token-path">Brand.purple-300</span>
+          <span class="token-value">#a29bff</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#837aff"></div>
+        <div class="color-info">
+          <span class="token-name">purple-400</span>
+          <span class="token-path">Brand.purple-400</span>
+          <span class="token-value">#837aff</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#6460ff"></div>
+        <div class="color-info">
+          <span class="token-name">purple-500</span>
+          <span class="token-path">Brand.purple-500</span>
+          <span class="token-value">#6460ff</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#605fff"></div>
+        <div class="color-info">
+          <span class="token-name">purple-600</span>
+          <span class="token-path">Brand.purple-600</span>
+          <span class="token-value">#605fff</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#4844e0"></div>
+        <div class="color-info">
+          <span class="token-name">purple-700</span>
+          <span class="token-path">Brand.purple-700</span>
+          <span class="token-value">#4844e0</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#3330c2"></div>
+        <div class="color-info">
+          <span class="token-name">purple-800</span>
+          <span class="token-path">Brand.purple-800</span>
+          <span class="token-value">#3330c2</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#1f1da3"></div>
+        <div class="color-info">
+          <span class="token-name">purple-900</span>
+          <span class="token-path">Brand.purple-900</span>
+          <span class="token-value">#1f1da3</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#f9fafb"></div>
+        <div class="color-info">
+          <span class="token-name">gray-50</span>
+          <span class="token-path">Gray.gray-50</span>
+          <span class="token-value">#f9fafb</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#f3f4f6"></div>
+        <div class="color-info">
+          <span class="token-name">gray-100</span>
+          <span class="token-path">Gray.gray-100</span>
+          <span class="token-value">#f3f4f6</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#e5e7eb"></div>
+        <div class="color-info">
+          <span class="token-name">gray-200</span>
+          <span class="token-path">Gray.gray-200</span>
+          <span class="token-value">#e5e7eb</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#d1d5db"></div>
+        <div class="color-info">
+          <span class="token-name">gray-300</span>
+          <span class="token-path">Gray.gray-300</span>
+          <span class="token-value">#d1d5db</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#9ca3af"></div>
+        <div class="color-info">
+          <span class="token-name">gray-400</span>
+          <span class="token-path">Gray.gray-400</span>
+          <span class="token-value">#9ca3af</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#6b7280"></div>
+        <div class="color-info">
+          <span class="token-name">gray-500</span>
+          <span class="token-path">Gray.gray-500</span>
+          <span class="token-value">#6b7280</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#4b5563"></div>
+        <div class="color-info">
+          <span class="token-name">gray-600</span>
+          <span class="token-path">Gray.gray-600</span>
+          <span class="token-value">#4b5563</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#374151"></div>
+        <div class="color-info">
+          <span class="token-name">gray-700</span>
+          <span class="token-path">Gray.gray-700</span>
+          <span class="token-value">#374151</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#1f2937"></div>
+        <div class="color-info">
+          <span class="token-name">gray-800</span>
+          <span class="token-path">Gray.gray-800</span>
+          <span class="token-value">#1f2937</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#111827"></div>
+        <div class="color-info">
+          <span class="token-name">gray-900</span>
+          <span class="token-path">Gray.gray-900</span>
+          <span class="token-value">#111827</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#22c55e"></div>
+        <div class="color-info">
+          <span class="token-name">green-500</span>
+          <span class="token-path">Status.green-500</span>
+          <span class="token-value">#22c55e</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#dcfce7"></div>
+        <div class="color-info">
+          <span class="token-name">green-100</span>
+          <span class="token-path">Status.green-100</span>
+          <span class="token-value">#dcfce7</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#ef4444"></div>
+        <div class="color-info">
+          <span class="token-name">red-500</span>
+          <span class="token-path">Status.red-500</span>
+          <span class="token-value">#ef4444</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#fee2e2"></div>
+        <div class="color-info">
+          <span class="token-name">red-100</span>
+          <span class="token-path">Status.red-100</span>
+          <span class="token-value">#fee2e2</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#eab308"></div>
+        <div class="color-info">
+          <span class="token-name">yellow-500</span>
+          <span class="token-path">Status.yellow-500</span>
+          <span class="token-value">#eab308</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#fef9c3"></div>
+        <div class="color-info">
+          <span class="token-name">yellow-100</span>
+          <span class="token-path">Status.yellow-100</span>
+          <span class="token-value">#fef9c3</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#3b82f6"></div>
+        <div class="color-info">
+          <span class="token-name">blue-500</span>
+          <span class="token-path">Status.blue-500</span>
+          <span class="token-value">#3b82f6</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#dbeafe"></div>
+        <div class="color-info">
+          <span class="token-name">blue-100</span>
+          <span class="token-path">Status.blue-100</span>
+          <span class="token-value">#dbeafe</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#ffffff"></div>
+        <div class="color-info">
+          <span class="token-name">white</span>
+          <span class="token-path">Base.white</span>
+          <span class="token-value">#ffffff</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#000000"></div>
+        <div class="color-info">
+          <span class="token-name">black</span>
+          <span class="token-path">Base.black</span>
+          <span class="token-value">#000000</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#0f1117"></div>
+        <div class="color-info">
+          <span class="token-name">dark-bg</span>
+          <span class="token-path">Dark.dark-bg</span>
+          <span class="token-value">#0f1117</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#1a1d27"></div>
+        <div class="color-info">
+          <span class="token-name">dark-surface</span>
+          <span class="token-path">Dark.dark-surface</span>
+          <span class="token-value">#1a1d27</span>
+        </div>
+      </div><div class="color-card">
+        <div class="color-swatch" style="background:#2d3142"></div>
+        <div class="color-info">
+          <span class="token-name">dark-border</span>
+          <span class="token-path">Dark.dark-border</span>
+          <span class="token-value">#2d3142</span>
+        </div>
+      </div></div></section>
+<section class="collection">
+    <h2 class="collection-title">semantic-tokens</h2><table class="token-table">
+      <thead><tr><th>Token</th><th>Value</th><th>Type</th></tr></thead>
+      <tbody><tr>
+        <td><code>color.bg.default</code></td>
+        <td><span class="val-text">{Base.white}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.bg.subtle</code></td>
+        <td><span class="val-text">{Gray.gray-50}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.bg.muted</code></td>
+        <td><span class="val-text">{Gray.gray-100}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.bg.brand</code></td>
+        <td><span class="val-text">{Brand.purple-600}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.bg.brand-subtle</code></td>
+        <td><span class="val-text">{Brand.purple-50}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.text.default</code></td>
+        <td><span class="val-text">{Gray.gray-900}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.text.subtle</code></td>
+        <td><span class="val-text">{Gray.gray-500}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.text.muted</code></td>
+        <td><span class="val-text">{Gray.gray-400}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.text.brand</code></td>
+        <td><span class="val-text">{Brand.purple-600}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.text.inverse</code></td>
+        <td><span class="val-text">{Base.white}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.text.disabled</code></td>
+        <td><span class="val-text">{Gray.gray-300}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.text.on-brand</code></td>
+        <td><span class="val-text">{Base.white}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.border.default</code></td>
+        <td><span class="val-text">{Gray.gray-200}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.border.strong</code></td>
+        <td><span class="val-text">{Gray.gray-400}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.border.brand</code></td>
+        <td><span class="val-text">{Brand.purple-600}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.border.subtle</code></td>
+        <td><span class="val-text">{Gray.gray-100}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.fill.brand</code></td>
+        <td><span class="val-text">{Brand.purple-600}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.fill.brand-hover</code></td>
+        <td><span class="val-text">{Brand.purple-700}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.fill.brand-subtle</code></td>
+        <td><span class="val-text">{Brand.purple-50}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.fill.neutral</code></td>
+        <td><span class="val-text">{Gray.gray-100}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.fill.neutral-hover</code></td>
+        <td><span class="val-text">{Gray.gray-200}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.status.success</code></td>
+        <td><span class="val-text">{Status.green-500}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.status.success-bg</code></td>
+        <td><span class="val-text">{Status.green-100}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.status.error</code></td>
+        <td><span class="val-text">{Status.red-500}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.status.error-bg</code></td>
+        <td><span class="val-text">{Status.red-100}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.status.warning</code></td>
+        <td><span class="val-text">{Status.yellow-500}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.status.warning-bg</code></td>
+        <td><span class="val-text">{Status.yellow-100}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.status.info</code></td>
+        <td><span class="val-text">{Status.blue-500}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr><tr>
+        <td><code>color.status.info-bg</code></td>
+        <td><span class="val-text">{Status.blue-100}</span></td>
+        <td><span class="type-badge type-alias">alias</span></td>
+      </tr></tbody></table></section>
+<section class="collection">
+    <h2 class="collection-title">semantic</h2></section>
+<section class="collection">
+    <h2 class="collection-title">spacing</h2><table class="token-table">
+      <thead><tr><th>Token</th><th>Value</th><th>Type</th></tr></thead>
+      <tbody><tr>
+        <td><code>space.0</code></td>
+        <td><span class="spacing-bar" style="width:0px"></span><span class="val-text">0</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>space.1</code></td>
+        <td><span class="spacing-bar" style="width:4px"></span><span class="val-text">4</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>space.2</code></td>
+        <td><span class="spacing-bar" style="width:8px"></span><span class="val-text">8</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>space.3</code></td>
+        <td><span class="spacing-bar" style="width:12px"></span><span class="val-text">12</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>space.4</code></td>
+        <td><span class="spacing-bar" style="width:16px"></span><span class="val-text">16</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>space.5</code></td>
+        <td><span class="spacing-bar" style="width:20px"></span><span class="val-text">20</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>space.6</code></td>
+        <td><span class="spacing-bar" style="width:24px"></span><span class="val-text">24</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>space.8</code></td>
+        <td><span class="spacing-bar" style="width:32px"></span><span class="val-text">32</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>space.10</code></td>
+        <td><span class="spacing-bar" style="width:40px"></span><span class="val-text">40</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>space.12</code></td>
+        <td><span class="spacing-bar" style="width:48px"></span><span class="val-text">48</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>space.16</code></td>
+        <td><span class="spacing-bar" style="width:64px"></span><span class="val-text">64</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>space.20</code></td>
+        <td><span class="spacing-bar" style="width:80px"></span><span class="val-text">80</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>space.24</code></td>
+        <td><span class="spacing-bar" style="width:96px"></span><span class="val-text">96</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr></tbody></table></section>
+<section class="collection">
+    <h2 class="collection-title">typography</h2><table class="token-table">
+      <thead><tr><th>Token</th><th>Value</th><th>Type</th></tr></thead>
+      <tbody><tr>
+        <td><code>font-size.xs</code></td>
+        <td><span class="val-text">10</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>font-size.sm</code></td>
+        <td><span class="val-text">12</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>font-size.base</code></td>
+        <td><span class="val-text">14</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>font-size.md</code></td>
+        <td><span class="val-text">16</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>font-size.lg</code></td>
+        <td><span class="val-text">18</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>font-size.xl</code></td>
+        <td><span class="val-text">20</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>font-size.2xl</code></td>
+        <td><span class="val-text">24</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>font-size.3xl</code></td>
+        <td><span class="val-text">30</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>font-size.4xl</code></td>
+        <td><span class="val-text">36</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>font-size.5xl</code></td>
+        <td><span class="val-text">48</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>font-size.6xl</code></td>
+        <td><span class="val-text">60</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>font-size.7xl</code></td>
+        <td><span class="val-text">72</span></td>
+        <td><span class="type-badge type-fontSizes">fontSizes</span></td>
+      </tr><tr>
+        <td><code>line-height.tight</code></td>
+        <td><span class="spacing-bar" style="width:16px"></span><span class="val-text">16</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>line-height.snug</code></td>
+        <td><span class="spacing-bar" style="width:20px"></span><span class="val-text">20</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>line-height.normal</code></td>
+        <td><span class="spacing-bar" style="width:24px"></span><span class="val-text">24</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>line-height.relaxed</code></td>
+        <td><span class="spacing-bar" style="width:28px"></span><span class="val-text">28</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>line-height.loose</code></td>
+        <td><span class="spacing-bar" style="width:32px"></span><span class="val-text">32</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>line-height.xl</code></td>
+        <td><span class="spacing-bar" style="width:40px"></span><span class="val-text">40</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>line-height.2xl</code></td>
+        <td><span class="spacing-bar" style="width:48px"></span><span class="val-text">48</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
+        <td><code>letter-spacing.tight</code></td>
+        <td><span class="spacing-bar" style="width:-0.4000000059604645px"></span><span class="val-text">-0.4000000059604645</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>letter-spacing.normal</code></td>
+        <td><span class="spacing-bar" style="width:0px"></span><span class="val-text">0</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>letter-spacing.wide</code></td>
+        <td><span class="spacing-bar" style="width:0.4000000059604645px"></span><span class="val-text">0.4000000059604645</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr><tr>
+        <td><code>letter-spacing.wider</code></td>
+        <td><span class="spacing-bar" style="width:0.800000011920929px"></span><span class="val-text">0.800000011920929</span></td>
+        <td><span class="type-badge type-spacing">spacing</span></td>
+      </tr></tbody></table></section>
+</main>
+
+<footer class="footer">
+  Generated by Token Sync · 2026. 5. 20. PM 6:24:13
+</footer>
+
+</body>
+</html>
