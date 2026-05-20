@@ -129,11 +129,61 @@ function collectionSection(name, tokens) {
   return html;
 }
 
+// ── 컴포넌트 스펙 읽기 ────────────────────────────────────────────────────────
+
+let componentsByGroup = {};
+let totalComponents = 0;
+try {
+  componentsByGroup = JSON.parse(readFileSync("components/specs/components.json", "utf-8"));
+  totalComponents = Object.values(componentsByGroup).reduce((s, a) => s + a.length, 0);
+} catch (_) {}
+
+function componentSection(components) {
+  if (totalComponents === 0) return "";
+
+  let html = `<section class="collection">
+    <h2 class="collection-title" style="--dot:#f59e0b">Components</h2>
+    <div class="comp-grid">`;
+
+  for (const [group, comps] of Object.entries(components)) {
+    for (const comp of comps) {
+      const variantTags = comp.variants.map(v =>
+        `<span class="variant-tag">${v.name}: ${v.values.join(", ")}</span>`
+      ).join("");
+
+      const propTags = comp.props.slice(0, 4).map(p =>
+        `<span class="prop-tag">${p.name} <em>${p.type.toLowerCase()}</em></span>`
+      ).join("");
+
+      html += `<div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">${comp.name}</span>
+          <span class="comp-group">${group}</span>
+        </div>
+        ${comp.description ? `<p class="comp-desc">${comp.description}</p>` : ""}
+        ${variantTags ? `<div class="tag-row">${variantTags}</div>` : ""}
+        ${propTags ? `<div class="tag-row">${propTags}</div>` : ""}
+        <div class="comp-meta">${comp.width} × ${comp.height}px</div>
+      </div>`;
+    }
+  }
+
+  html += `</div></section>`;
+  return html;
+}
+
+// ── 섹션 조합 ─────────────────────────────────────────────────────────────────
+
 const sectionsHtml = Object.entries(byCollection)
   .map(([name, tokens]) => collectionSection(name, tokens))
   .join("\n");
 
+const componentsHtml = componentSection(componentsByGroup);
+
 const totalTokens = Object.values(byCollection).reduce((s, t) => s + Object.keys(t).length, 0);
+
+const FIGMA_FILE_KEY = "lAXzAARFQVK4n2CsBcVxYk";
+const FIGMA_PROTO_URL = `https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/proto/${FIGMA_FILE_KEY}/relevance-ai-clone?type=design%26scaling=scale-down-width%26page-id=0%3A1`;
 
 const html = `<!DOCTYPE html>
 <html lang="ko">
@@ -257,6 +307,62 @@ const html = `<!DOCTYPE html>
   .type-string      { background: #fff7ed; color: #9a3412; }
   .type-alias       { background: #f0fdf4; color: #14532d; }
 
+  /* ── 탭 네비 ── */
+  .nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex; gap: 0;
+  }
+  .nav-tab {
+    padding: 12px 18px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    color: var(--text-2);
+    transition: all .15s;
+    background: none; border-top: none; border-left: none; border-right: none;
+  }
+  .nav-tab.active { color: var(--text); border-bottom-color: var(--brand); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── 컴포넌트 ── */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .comp-card {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px; background: var(--surface);
+  }
+  .comp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .comp-name   { font-weight: 600; font-size: 13px; }
+  .comp-group  { font-size: 10px; color: var(--text-3); background: var(--bg); padding: 2px 7px; border-radius: 99px; }
+  .comp-desc   { font-size: 11px; color: var(--text-2); margin-bottom: 8px; line-height: 1.4; }
+  .tag-row     { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+  .variant-tag { font-size: 10px; background: #ede9fe; color: #4c1d95; padding: 2px 6px; border-radius: 4px; }
+  .prop-tag    { font-size: 10px; background: #f0f9ff; color: #0369a1; padding: 2px 6px; border-radius: 4px; }
+  .prop-tag em { font-style: normal; color: var(--text-3); }
+  .comp-meta   { font-size: 10px; color: var(--text-3); margin-top: 4px; }
+
+  /* ── 프로토타입 ── */
+  .proto-wrap {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    aspect-ratio: 16/10; width: 100%;
+  }
+  .proto-wrap iframe { width: 100%; height: 100%; border: none; }
+  .proto-hint { text-align: center; padding: 12px; font-size: 11px; color: var(--text-3); }
+
+  /* ── 빈 상태 ── */
+  .empty-state {
+    text-align: center; padding: 48px 24px;
+    color: var(--text-3); font-size: 13px;
+  }
+  .empty-state .icon { font-size: 32px; margin-bottom: 8px; }
+
   /* ── 푸터 ── */
   .footer {
     text-align: center; padding: 24px;
@@ -272,28 +378,55 @@ const html = `<!DOCTYPE html>
     <p>biancaroh0424/designsystem-test · design/tokens · ${now} 기준</p>
   </div>
   <div class="stats">
-    <div class="stat">
-      <div class="num">${totalTokens}</div>
-      <div class="label">Tokens</div>
-    </div>
-    <div class="stat">
-      <div class="num">${Object.keys(byCollection).length}</div>
-      <div class="label">Collections</div>
-    </div>
-    <div class="stat">
-      <div class="num">${colors.length}</div>
-      <div class="label">Colors</div>
-    </div>
+    <div class="stat"><div class="num">${totalTokens}</div><div class="label">Tokens</div></div>
+    <div class="stat"><div class="num">${totalComponents}</div><div class="label">Components</div></div>
+    <div class="stat"><div class="num">${colors.length}</div><div class="label">Colors</div></div>
   </div>
 </header>
 
+<nav class="nav">
+  <button class="nav-tab active" onclick="showTab('tokens', this)">🎨 Tokens</button>
+  <button class="nav-tab" onclick="showTab('components', this)">🧩 Components</button>
+  <button class="nav-tab" onclick="showTab('prototype', this)">📱 Prototype</button>
+</nav>
+
 <main class="main">
-  ${sectionsHtml}
+
+  <div id="tab-tokens" class="tab-panel active">
+    ${sectionsHtml}
+  </div>
+
+  <div id="tab-components" class="tab-panel">
+    ${componentsHtml || `<div class="empty-state"><div class="icon">🧩</div><p>아직 컴포넌트가 없어요.<br>Figma 플러그인에서 Push하면 여기에 나타나요.</p></div>`}
+  </div>
+
+  <div id="tab-prototype" class="tab-panel">
+    <section class="collection">
+      <h2 class="collection-title">Prototype</h2>
+      <div class="proto-wrap">
+        <iframe
+          src="${FIGMA_PROTO_URL}"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <p class="proto-hint">Figma 계정으로 로그인되어 있어야 보여요 · <a href="https://www.figma.com/design/${FIGMA_FILE_KEY}" target="_blank">Figma에서 열기 →</a></p>
+    </section>
+  </div>
+
 </main>
 
 <footer class="footer">
   Generated by Token Sync · ${now}
 </footer>
+
+<script>
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
 
 </body>
 </html>`;

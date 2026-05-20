@@ -271,51 +271,150 @@ async function push() {
   if (!validate()) return;
 
   setLoading(true);
-  log('Figma 변수 읽는 중...', 'info');
+  log('Figma 변수 + 컴포넌트 읽는 중...', 'info');
 
+  // 변수 먼저 읽기 → 완료 후 컴포넌트 읽기 (onmessage에서 순차 처리)
   parent.postMessage({ pluginMessage: { type: 'READ_VARIABLES' } }, '*');
 }
 
+// 변수 push 완료 후 컴포넌트 push
 async function doPush(tokens) {
   try {
     const collections = Object.entries(tokens);
-    if (collections.length === 0) {
-      log('⚠️  Figma에 변수가 없어요. 먼저 Variables를 만들어주세요.', 'err');
-      return;
-    }
-
-    log(`${collections.length}개 컬렉션 발견 → GitHub에 쓰는 중...`, 'info');
+    log(`토큰 ${collections.length}개 컬렉션 → GitHub에 쓰는 중...`, 'info');
 
     for (const [key, tokenData] of collections) {
       const filePath = `${settings.path}/${key}.json`;
-      const content = btoa(unescape(encodeURIComponent(
-        JSON.stringify(tokenData, null, 2) + '\n'
-      )));
-
-      // 기존 파일 SHA 조회 (업데이트 시 필요)
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify(tokenData, null, 2) + '\n')));
       let sha;
-      try {
-        const existing = await ghRequest(`/contents/${filePath}?ref=${settings.branch}`);
-        sha = existing.sha;
-      } catch (_) { /* 신규 파일 */ }
-
-      const body = {
-        message: `chore: update ${key} tokens from Figma [skip-figma-sync]`,
-        content,
-        branch: settings.branch,
-      };
+      try { const ex = await ghRequest(`/contents/${filePath}?ref=${settings.branch}`); sha = ex.sha; } catch (_) {}
+      const body = { message: `chore: update ${key} tokens from Figma [skip-figma-sync]`, content, branch: settings.branch };
       if (sha) body.sha = sha;
-
       await ghRequest(`/contents/${filePath}`, 'PUT', body);
-      log(`✅ ${filePath} 저장됨`, 'ok');
+      log(`✅ tokens/${key}.json 저장됨`, 'ok');
     }
 
-    log('🚀 Push 완료! GitHub Actions가 자동으로 처리해요.', 'ok');
+    // 이어서 컴포넌트 읽기
+    log('Figma 컴포넌트 읽는 중...', 'info');
+    parent.postMessage({ pluginMessage: { type: 'READ_COMPONENTS' } }, '*');
+  } catch (e) {
+    log(`❌ ${e.message}`, 'err');
+    setLoading(false);
+  }
+}
+
+async function doPushComponents(components) {
+  try {
+    const groups = Object.keys(components);
+    let totalCount = 0;
+    for (const g of groups) totalCount += components[g].length;
+
+    if (totalCount === 0) {
+      log('⚠️  Figma에 컴포넌트가 없어요.', 'err');
+      setLoading(false);
+      return;
+    }
+
+    log(`컴포넌트 ${totalCount}개 → GitHub에 쓰는 중...`, 'info');
+
+    // 1) 스펙 JSON 저장
+    const specPath = 'components/specs/components.json';
+    const specContent = btoa(unescape(encodeURIComponent(JSON.stringify(components, null, 2) + '\n')));
+    let specSha;
+    try { const ex = await ghRequest(`/contents/${specPath}?ref=${settings.branch}`); specSha = ex.sha; } catch (_) {}
+    const specBody = { message: 'chore: update component specs from Figma [skip-figma-sync]', content: specContent, branch: settings.branch };
+    if (specSha) specBody.sha = specSha;
+    await ghRequest(`/contents/${specPath}`, 'PUT', specBody);
+    log(`✅ components/specs/components.json 저장됨`, 'ok');
+
+    // 2) React 스텁 생성 + 저장
+    for (const [group, comps] of Object.entries(components)) {
+      for (const comp of comps) {
+        const fileName = comp.name.replace(/\s+/g, '');
+        const filePath = `components/src/${fileName}.tsx`;
+        const tsxContent = generateReactStub(comp);
+        const encoded = btoa(unescape(encodeURIComponent(tsxContent)));
+        let sha;
+        try { const ex = await ghRequest(`/contents/${filePath}?ref=${settings.branch}`); sha = ex.sha; } catch (_) {}
+        // 이미 있으면 덮어쓰지 않음 (개발자가 폴리싱한 코드 보호)
+        if (!sha) {
+          const body = { message: `feat: add ${comp.name} component stub [skip-figma-sync]`, content: encoded, branch: settings.branch };
+          await ghRequest(`/contents/${filePath}`, 'PUT', body);
+          log(`✅ components/src/${fileName}.tsx 생성됨`, 'ok');
+        } else {
+          log(`⏭ components/src/${fileName}.tsx 이미 있음 (스킵)`, 'info');
+        }
+      }
+    }
+
+    log('🚀 Push 완료! 프리뷰가 곧 업데이트돼요.', 'ok');
   } catch (e) {
     log(`❌ ${e.message}`, 'err');
   } finally {
     setLoading(false);
   }
+}
+
+function generateReactStub(comp) {
+  const compName = comp.name.replace(/\s+/g, '');
+
+  // Props 타입 생성
+  const propLines = [];
+  for (const v of comp.variants) {
+    const union = v.values.map(val => `'${val}'`).join(' | ');
+    propLines.push(`  ${toCamel(v.name)}?: ${union};`);
+  }
+  for (const p of comp.props) {
+    if (p.type === 'BOOLEAN') propLines.push(`  ${toCamel(p.name)}?: boolean;`);
+    else if (p.type === 'TEXT') propLines.push(`  ${toCamel(p.name)}?: string;`);
+    else if (p.type === 'INSTANCE_SWAP') propLines.push(`  ${toCamel(p.name)}?: React.ReactNode;`);
+  }
+  propLines.push('  className?: string;');
+  propLines.push('  onClick?: () => void;');
+
+  // 기본값
+  const defaultLines = [];
+  for (const v of comp.variants) {
+    if (v.values[0]) defaultLines.push(`  ${toCamel(v.name)} = '${v.values[0]}',`);
+  }
+  for (const p of comp.props) {
+    if (p.defaultValue) {
+      if (p.type === 'BOOLEAN') defaultLines.push(`  ${toCamel(p.name)} = ${p.defaultValue === 'true'},`);
+      else if (p.type === 'TEXT') defaultLines.push(`  ${toCamel(p.name)} = '${p.defaultValue}',`);
+    }
+  }
+
+  const propsInterface = propLines.length ? `\ninterface ${compName}Props {\n${propLines.join('\n')}\n}\n` : '';
+  const propsArg = defaultLines.length
+    ? `{\n  ${defaultLines.join('\n  ')}\n  className,\n  onClick,\n}: ${compName}Props`
+    : `{}: ${compName}Props`;
+
+  return `import React from 'react';
+import styles from './${compName}.module.css';
+${propsInterface}
+/**
+ * ${comp.name}
+ * ${comp.description || 'Auto-generated from Figma. Polish as needed.'}
+ * @figma ${comp.width}×${comp.height}
+ */
+export const ${compName}: React.FC<${compName}Props> = (${propsArg}) => {
+  return (
+    <div
+      className={[styles.root, className].filter(Boolean).join(' ')}
+      onClick={onClick}
+      data-component="${comp.name}"
+    >
+      {/* TODO: implement ${comp.name} */}
+    </div>
+  );
+};
+
+export default ${compName};
+`;
+}
+
+function toCamel(str) {
+  return str.replace(/[-_\s]+(.)/g, (_, c) => c.toUpperCase()).replace(/^(.)/, c => c.toLowerCase());
 }
 
 // ── Pull (GitHub → Figma) ──────────────────────────────────────────────────────
@@ -393,6 +492,10 @@ window.onmessage = (event) => {
 
     case 'VARIABLES_DATA':
       doPush(msg.tokens);
+      break;
+
+    case 'COMPONENTS_DATA':
+      doPushComponents(msg.components);
       break;
 
     case 'WRITE_DONE':

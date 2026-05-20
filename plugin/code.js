@@ -211,6 +211,69 @@ async function writeVariables(tokensByCollection) {
   return { created: created, updated: updated };
 }
 
+// ── 컴포넌트 읽기 ────────────────────────────────────────────────────────────────
+
+function readComponents() {
+  var result = {};
+  var nodes = figma.root.findAllWithCriteria({ types: ["COMPONENT_SET", "COMPONENT"] });
+
+  for (var i = 0; i < nodes.length; i++) {
+    var node = nodes[i];
+
+    // COMPONENT_SET 하위 COMPONENT는 parent에서 처리하므로 스킵
+    if (node.type === "COMPONENT" && node.parent && node.parent.type === "COMPONENT_SET") continue;
+
+    var nameParts = node.name.split("/");
+    var componentName = nameParts[nameParts.length - 1].trim();
+    var groupName = nameParts.length > 1 ? nameParts[0].trim() : "General";
+
+    var spec = {
+      name: componentName,
+      group: groupName,
+      description: node.description || "",
+      type: node.type,
+      variants: [],
+      props: []
+    };
+
+    // Variants (COMPONENT_SET)
+    if (node.type === "COMPONENT_SET" && node.variantGroupProperties) {
+      var vKeys = Object.keys(node.variantGroupProperties);
+      for (var vi = 0; vi < vKeys.length; vi++) {
+        var vKey = vKeys[vi];
+        spec.variants.push({
+          name: vKey,
+          values: node.variantGroupProperties[vKey].values
+        });
+      }
+    }
+
+    // Component properties
+    if (node.componentPropertyDefinitions) {
+      var pKeys = Object.keys(node.componentPropertyDefinitions);
+      for (var pi = 0; pi < pKeys.length; pi++) {
+        var pKey = pKeys[pi];
+        var pDef = node.componentPropertyDefinitions[pKey];
+        spec.props.push({
+          name: pKey.replace(/#\d+:\d+$/, "").trim(),
+          type: pDef.type,
+          defaultValue: pDef.defaultValue !== undefined ? String(pDef.defaultValue) : "",
+          variantOptions: pDef.variantOptions || []
+        });
+      }
+    }
+
+    // 크기 정보
+    spec.width  = Math.round(node.width);
+    spec.height = Math.round(node.height);
+
+    if (!result[groupName]) result[groupName] = [];
+    result[groupName].push(spec);
+  }
+
+  return result;
+}
+
 // ── 메시지 핸들러 ──────────────────────────────────────────────────────────────
 
 figma.ui.onmessage = async function(msg) {
@@ -238,6 +301,15 @@ figma.ui.onmessage = async function(msg) {
       try {
         var result = await writeVariables(msg.tokens);
         figma.ui.postMessage({ type: "WRITE_DONE", created: result.created, updated: result.updated });
+      } catch (e) {
+        figma.ui.postMessage({ type: "ERROR", message: e.message });
+      }
+      break;
+    }
+    case "READ_COMPONENTS": {
+      try {
+        var components = readComponents();
+        figma.ui.postMessage({ type: "COMPONENTS_DATA", components: components });
       } catch (e) {
         figma.ui.postMessage({ type: "ERROR", message: e.message });
       }
