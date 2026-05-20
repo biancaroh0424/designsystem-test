@@ -2,15 +2,16 @@ figma.showUI(__html__, { width: 380, height: 520, title: "Token Sync" });
 
 // ── 색상 변환 ────────────────────────────────────────────────────────────────
 
-function rgbaToHex({ r, g, b, a = 1 }) {
-  const hex = (v) => Math.round(v * 255).toString(16).padStart(2, "0");
+function rgbaToHex(rgba) {
+  var r = rgba.r, g = rgba.g, b = rgba.b, a = rgba.a === undefined ? 1 : rgba.a;
+  var hex = function(v) { return Math.round(v * 255).toString(16).padStart(2, "0"); };
   return a < 0.999
-    ? `#${hex(r)}${hex(g)}${hex(b)}${hex(a)}`
-    : `#${hex(r)}${hex(g)}${hex(b)}`;
+    ? "#" + hex(r) + hex(g) + hex(b) + hex(a)
+    : "#" + hex(r) + hex(g) + hex(b);
 }
 
 function hexToRgba(hex) {
-  const c = hex.replace("#", "");
+  var c = hex.replace("#", "");
   return {
     r: parseInt(c.slice(0, 2), 16) / 255,
     g: parseInt(c.slice(2, 4), 16) / 255,
@@ -22,69 +23,89 @@ function hexToRgba(hex) {
 // ── 중첩 객체 유틸 ────────────────────────────────────────────────────────────
 
 function setNested(obj, path, value) {
-  const parts = path.split("/");
-  let cur = obj;
-  for (let i = 0; i < parts.length - 1; i++) {
-    cur[parts[i]] = cur[parts[i]] ?? {};
+  var parts = path.split("/");
+  var cur = obj;
+  for (var i = 0; i < parts.length - 1; i++) {
+    if (cur[parts[i]] === undefined || cur[parts[i]] === null) {
+      cur[parts[i]] = {};
+    }
     cur = cur[parts[i]];
   }
-  cur[parts.at(-1)] = value;
+  cur[parts[parts.length - 1]] = value;
 }
 
-function flattenTokens(obj, prefix = "") {
-  const out = {};
-  for (const [k, v] of Object.entries(obj)) {
-    const path = prefix ? `${prefix}/${k}` : k;
-    if (v && typeof v === "object" && "value" in v) out[path] = v;
-    else if (v && typeof v === "object") Object.assign(out, flattenTokens(v, path));
+function flattenTokens(obj, prefix) {
+  var out = {};
+  var p = prefix || "";
+  var keys = Object.keys(obj);
+  for (var i = 0; i < keys.length; i++) {
+    var k = keys[i];
+    var v = obj[k];
+    var path = p ? p + "/" + k : k;
+    if (v && typeof v === "object" && "value" in v) {
+      out[path] = v;
+    } else if (v && typeof v === "object") {
+      var sub = flattenTokens(v, path);
+      var subKeys = Object.keys(sub);
+      for (var j = 0; j < subKeys.length; j++) {
+        out[subKeys[j]] = sub[subKeys[j]];
+      }
+    }
   }
   return out;
+}
+
+function replaceAll(str, search, replace) {
+  return str.split(search).join(replace);
 }
 
 // ── Figma 변수 → 토큰 JSON ────────────────────────────────────────────────────
 
 async function readVariables() {
-  const collections = await figma.variables.getLocalVariableCollectionsAsync();
-  const allVars = await figma.variables.getLocalVariablesAsync();
-  const varById = Object.fromEntries(allVars.map((v) => [v.id, v]));
+  var collections = await figma.variables.getLocalVariableCollectionsAsync();
+  var allVars = await figma.variables.getLocalVariablesAsync();
+  var varById = {};
+  for (var i = 0; i < allVars.length; i++) {
+    varById[allVars[i].id] = allVars[i];
+  }
 
-  const result = {};
+  var result = {};
 
-  for (const col of collections) {
-    const key = col.name.toLowerCase().replace(/\s+/g, "-");
-    const modeId = col.defaultModeId;
-    const tokens = {};
+  for (var ci = 0; ci < collections.length; ci++) {
+    var col = collections[ci];
+    var key = col.name.toLowerCase().replace(/\s+/g, "-");
+    var modeId = col.defaultModeId;
+    var tokens = {};
 
-    for (const v of allVars.filter((v) => v.variableCollectionId === col.id)) {
-      const raw = v.valuesByMode[modeId];
+    for (var vi = 0; vi < allVars.length; vi++) {
+      var v = allVars[vi];
+      if (v.variableCollectionId !== col.id) continue;
+
+      var raw = v.valuesByMode[modeId];
       if (raw === undefined) continue;
 
-      let value, type;
+      var value, type;
 
-      if (raw?.type === "VARIABLE_ALIAS") {
-        const ref = varById[raw.id];
-        value = ref ? `{${ref.name.replaceAll("/", ".")}}` : raw.id;
+      if (raw && raw.type === "VARIABLE_ALIAS") {
+        var ref = varById[raw.id];
+        value = ref ? "{" + replaceAll(ref.name, "/", ".") + "}" : raw.id;
         type = "alias";
       } else if (v.resolvedType === "COLOR") {
         value = rgbaToHex(raw);
         type = "color";
       } else if (v.resolvedType === "FLOAT") {
         value = String(raw);
-        type = /spacing|padding|gap|margin/i.test(v.name)
-          ? "spacing"
-          : /radius/i.test(v.name)
-          ? "borderRadius"
-          : /font.?size/i.test(v.name)
-          ? "fontSizes"
-          : /font.?weight/i.test(v.name)
-          ? "fontWeights"
-          : "number";
+        type = /spacing|padding|gap|margin/i.test(v.name) ? "spacing"
+             : /radius/i.test(v.name) ? "borderRadius"
+             : /font.?size/i.test(v.name) ? "fontSizes"
+             : /font.?weight/i.test(v.name) ? "fontWeights"
+             : "number";
       } else {
         value = String(raw);
         type = "string";
       }
 
-      setNested(tokens, v.name, { value, type });
+      setNested(tokens, v.name, { value: value, type: type });
     }
 
     result[key] = tokens;
@@ -96,39 +117,49 @@ async function readVariables() {
 // ── 토큰 JSON → Figma 변수 ────────────────────────────────────────────────────
 
 async function writeVariables(tokensByCollection) {
-  const existingCols = await figma.variables.getLocalVariableCollectionsAsync();
-  const existingVars = await figma.variables.getLocalVariablesAsync();
+  var existingCols = await figma.variables.getLocalVariableCollectionsAsync();
+  var existingVars = await figma.variables.getLocalVariablesAsync();
 
-  const colMap = Object.fromEntries(
-    existingCols.map((c) => [c.name.toLowerCase().replace(/\s+/g, "-"), c])
-  );
-  // key: "varName::colId"
-  const varMap = Object.fromEntries(
-    existingVars.map((v) => [`${v.name}::${v.variableCollectionId}`, v])
-  );
+  var colMap = {};
+  for (var i = 0; i < existingCols.length; i++) {
+    var c = existingCols[i];
+    colMap[c.name.toLowerCase().replace(/\s+/g, "-")] = c;
+  }
 
-  let created = 0, updated = 0;
+  var varMap = {};
+  for (var i = 0; i < existingVars.length; i++) {
+    var v = existingVars[i];
+    varMap[v.name + "::" + v.variableCollectionId] = v;
+  }
+
+  var created = 0, updated = 0;
 
   // 1패스: alias가 아닌 값 먼저
-  for (const [colKey, tokenData] of Object.entries(tokensByCollection)) {
-    const flat = flattenTokens(tokenData);
-    let col = colMap[colKey];
+  var colKeys = Object.keys(tokensByCollection);
+  for (var ci = 0; ci < colKeys.length; ci++) {
+    var colKey = colKeys[ci];
+    var tokenData = tokensByCollection[colKey];
+    var flat = flattenTokens(tokenData);
+
+    var col = colMap[colKey];
     if (!col) {
       col = figma.variables.createVariableCollection(colKey);
       colMap[colKey] = col;
     }
-    const modeId = col.defaultModeId;
+    var modeId = col.defaultModeId;
 
-    for (const [path, token] of Object.entries(flat)) {
-      if (String(token.value).startsWith("{")) continue; // alias는 2패스에서
+    var tokenPaths = Object.keys(flat);
+    for (var ti = 0; ti < tokenPaths.length; ti++) {
+      var path = tokenPaths[ti];
+      var token = flat[path];
+      if (String(token.value).charAt(0) === "{") continue;
 
-      const resolvedType =
-        token.type === "color" ? "COLOR"
-        : ["spacing","borderRadius","fontSizes","fontWeights","number"].includes(token.type) ? "FLOAT"
+      var resolvedType = token.type === "color" ? "COLOR"
+        : (token.type === "spacing" || token.type === "borderRadius" || token.type === "fontSizes" || token.type === "fontWeights" || token.type === "number") ? "FLOAT"
         : "STRING";
 
-      const mapKey = `${path}::${col.id}`;
-      let variable = varMap[mapKey];
+      var mapKey = path + "::" + col.id;
+      var variable = varMap[mapKey];
       if (!variable) {
         variable = figma.variables.createVariable(path, col, resolvedType);
         varMap[mapKey] = variable;
@@ -137,49 +168,56 @@ async function writeVariables(tokensByCollection) {
         updated++;
       }
 
-      const val = token.value;
-      if (resolvedType === "COLOR") variable.setValueForMode(modeId, hexToRgba(val));
-      else if (resolvedType === "FLOAT") variable.setValueForMode(modeId, parseFloat(val));
-      else variable.setValueForMode(modeId, String(val));
+      if (resolvedType === "COLOR") variable.setValueForMode(modeId, hexToRgba(token.value));
+      else if (resolvedType === "FLOAT") variable.setValueForMode(modeId, parseFloat(token.value));
+      else variable.setValueForMode(modeId, String(token.value));
     }
   }
 
   // 2패스: alias 설정
-  const refreshedVars = await figma.variables.getLocalVariablesAsync();
-  const varByName = Object.fromEntries(refreshedVars.map((v) => [v.name, v]));
+  var refreshedVars = await figma.variables.getLocalVariablesAsync();
+  var varByName = {};
+  for (var i = 0; i < refreshedVars.length; i++) {
+    varByName[refreshedVars[i].name] = refreshedVars[i];
+  }
 
-  for (const [colKey, tokenData] of Object.entries(tokensByCollection)) {
-    const flat = flattenTokens(tokenData);
-    const col = colMap[colKey];
+  for (var ci = 0; ci < colKeys.length; ci++) {
+    var colKey = colKeys[ci];
+    var tokenData = tokensByCollection[colKey];
+    var flat = flattenTokens(tokenData);
+    var col = colMap[colKey];
     if (!col) continue;
-    const modeId = col.defaultModeId;
+    var modeId = col.defaultModeId;
 
-    for (const [path, token] of Object.entries(flat)) {
-      const rawVal = String(token.value);
-      if (!rawVal.startsWith("{")) continue;
+    var tokenPaths = Object.keys(flat);
+    for (var ti = 0; ti < tokenPaths.length; ti++) {
+      var path = tokenPaths[ti];
+      var token = flat[path];
+      var rawVal = String(token.value);
+      if (rawVal.charAt(0) !== "{") continue;
 
-      const refName = rawVal.slice(1, -1).replaceAll(".", "/");
-      const refVar = varByName[refName];
+      var refName = replaceAll(rawVal.slice(1, -1), ".", "/");
+      var refVar = varByName[refName];
       if (!refVar) continue;
 
-      const mapKey = `${path}::${col.id}`;
-      const variable = varMap[mapKey];
+      var mapKey = path + "::" + col.id;
+      var variable = varMap[mapKey];
       if (!variable) continue;
 
       variable.setValueForMode(modeId, { type: "VARIABLE_ALIAS", id: refVar.id });
     }
   }
 
-  return { created, updated };
+  return { created: created, updated: updated };
 }
 
 // ── 메시지 핸들러 ──────────────────────────────────────────────────────────────
 
-figma.ui.onmessage = async (msg) => {
+figma.ui.onmessage = async function(msg) {
   switch (msg.type) {
     case "LOAD_SETTINGS": {
-      const s = await figma.clientStorage.getAsync("token-sync-settings");
-      figma.ui.postMessage({ type: "SETTINGS", data: s ?? {} });
+      var s = await figma.clientStorage.getAsync("token-sync-settings");
+      figma.ui.postMessage({ type: "SETTINGS", data: s || {} });
       break;
     }
     case "SAVE_SETTINGS": {
@@ -189,8 +227,8 @@ figma.ui.onmessage = async (msg) => {
     }
     case "READ_VARIABLES": {
       try {
-        const tokens = await readVariables();
-        figma.ui.postMessage({ type: "VARIABLES_DATA", tokens });
+        var tokens = await readVariables();
+        figma.ui.postMessage({ type: "VARIABLES_DATA", tokens: tokens });
       } catch (e) {
         figma.ui.postMessage({ type: "ERROR", message: e.message });
       }
@@ -198,8 +236,8 @@ figma.ui.onmessage = async (msg) => {
     }
     case "WRITE_VARIABLES": {
       try {
-        const { created, updated } = await writeVariables(msg.tokens);
-        figma.ui.postMessage({ type: "WRITE_DONE", created, updated });
+        var result = await writeVariables(msg.tokens);
+        figma.ui.postMessage({ type: "WRITE_DONE", created: result.created, updated: result.updated });
       } catch (e) {
         figma.ui.postMessage({ type: "ERROR", message: e.message });
       }
