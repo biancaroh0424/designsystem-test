@@ -1,14 +1,30 @@
 {
-  "name": "designsystem-test",
-  "version": "1.0.0",
+  "name": "@biancaroh0424/design-tokens",
+  "version": "0.1.0",
   "description": "Design system tokens — Figma ↔ GitHub bidirectional sync",
   "type": "module",
+  "main": "./dist/js/tokens.js",
+  "types": "./dist/js/tokens.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/js/tokens.js",
+      "types": "./dist/js/tokens.d.ts"
+    },
+    "./css": "./dist/css/tokens.css",
+    "./json": "./dist/json/tokens.json"
+  },
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "build:tokens": "style-dictionary build --config style-dictionary.config.js",
     "watch:tokens": "style-dictionary build --config style-dictionary.config.js --watch",
     "sync:from-figma": "node scripts/figma-to-tokens.js",
     "sync:to-figma": "node scripts/tokens-to-figma.js",
     "preview": "node scripts/generate-preview.js && open preview/index.html"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "devDependencies": {
     "style-dictionary": "^4.0.0"
