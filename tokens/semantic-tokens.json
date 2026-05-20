@@ -1,0 +1,130 @@
+{
+  "color": {
+    "bg": {
+      "default": {
+        "value": "{Base.white}",
+        "type": "alias"
+      },
+      "subtle": {
+        "value": "{Gray.gray-50}",
+        "type": "alias"
+      },
+      "muted": {
+        "value": "{Gray.gray-100}",
+        "type": "alias"
+      },
+      "brand": {
+        "value": "{Brand.purple-600}",
+        "type": "alias"
+      },
+      "brand-subtle": {
+        "value": "{Brand.purple-50}",
+        "type": "alias"
+      }
+    },
+    "text": {
+      "default": {
+        "value": "{Gray.gray-900}",
+        "type": "alias"
+      },
+      "subtle": {
+        "value": "{Gray.gray-500}",
+        "type": "alias"
+      },
+      "muted": {
+        "value": "{Gray.gray-400}",
+        "type": "alias"
+      },
+      "brand": {
+        "value": "{Brand.purple-600}",
+        "type": "alias"
+      },
+      "inverse": {
+        "value": "{Base.white}",
+        "type": "alias"
+      },
+      "disabled": {
+        "value": "{Gray.gray-300}",
+        "type": "alias"
+      },
+      "on-brand": {
+        "value": "{Base.white}",
+        "type": "alias"
+      }
+    },
+    "border": {
+      "default": {
+        "value": "{Gray.gray-200}",
+        "type": "alias"
+      },
+      "strong": {
+        "value": "{Gray.gray-400}",
+        "type": "alias"
+      },
+      "brand": {
+        "value": "{Brand.purple-600}",
+        "type": "alias"
+      },
+      "subtle": {
+        "value": "{Gray.gray-100}",
+        "type": "alias"
+      }
+    },
+    "fill": {
+      "brand": {
+        "value": "{Brand.purple-600}",
+        "type": "alias"
+      },
+      "brand-hover": {
+        "value": "{Brand.purple-700}",
+        "type": "alias"
+      },
+      "brand-subtle": {
+        "value": "{Brand.purple-50}",
+        "type": "alias"
+      },
+      "neutral": {
+        "value": "{Gray.gray-100}",
+        "type": "alias"
+      },
+      "neutral-hover": {
+        "value": "{Gray.gray-200}",
+        "type": "alias"
+      }
+    },
+    "status": {
+      "success": {
+        "value": "{Status.green-500}",
+        "type": "alias"
+      },
+      "success-bg": {
+        "value": "{Status.green-100}",
+        "type": "alias"
+      },
+      "error": {
+        "value": "{Status.red-500}",
+        "type": "alias"
+      },
+      "error-bg": {
+        "value": "{Status.red-100}",
+        "type": "alias"
+      },
+      "warning": {
+        "value": "{Status.yellow-500}",
+        "type": "alias"
+      },
+      "warning-bg": {
+        "value": "{Status.yellow-100}",
+        "type": "alias"
+      },
+      "info": {
+        "value": "{Status.blue-500}",
+        "type": "alias"
+      },
+      "info-bg": {
+        "value": "{Status.blue-100}",
+        "type": "alias"
+      }
+    }
+  }
+}
