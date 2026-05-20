@@ -151,7 +151,7 @@ async function main() {
       return;
     }
     execSync(
-      `git commit -m "chore: sync tokens from Figma [$(date '+%Y-%m-%d %H:%M')]"`,
+      `git commit -m "chore: sync tokens from Figma [skip-figma-sync] [$(date '+%Y-%m-%d %H:%M')]"`,
       { stdio: "inherit", shell: true }
     );
     execSync("git push origin design/tokens", { stdio: "inherit" });

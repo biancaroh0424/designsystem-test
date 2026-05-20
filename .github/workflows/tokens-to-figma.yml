@@ -7,9 +7,12 @@ on:
     paths:
       - "tokens/**"
 
+# Figma에서 온 커밋([skip-figma-sync] 태그)은 다시 Figma로 보내지 않음
+
 jobs:
   sync-to-figma:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip-figma-sync]')"
     steps:
       - uses: actions/checkout@v4
         with:
