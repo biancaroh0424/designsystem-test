@@ -120,6 +120,62 @@
   .type-string      { background: #fff7ed; color: #9a3412; }
   .type-alias       { background: #f0fdf4; color: #14532d; }
 
+  /* ── 탭 네비 ── */
+  .nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex; gap: 0;
+  }
+  .nav-tab {
+    padding: 12px 18px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    color: var(--text-2);
+    transition: all .15s;
+    background: none; border-top: none; border-left: none; border-right: none;
+  }
+  .nav-tab.active { color: var(--text); border-bottom-color: var(--brand); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── 컴포넌트 ── */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .comp-card {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px; background: var(--surface);
+  }
+  .comp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .comp-name   { font-weight: 600; font-size: 13px; }
+  .comp-group  { font-size: 10px; color: var(--text-3); background: var(--bg); padding: 2px 7px; border-radius: 99px; }
+  .comp-desc   { font-size: 11px; color: var(--text-2); margin-bottom: 8px; line-height: 1.4; }
+  .tag-row     { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+  .variant-tag { font-size: 10px; background: #ede9fe; color: #4c1d95; padding: 2px 6px; border-radius: 4px; }
+  .prop-tag    { font-size: 10px; background: #f0f9ff; color: #0369a1; padding: 2px 6px; border-radius: 4px; }
+  .prop-tag em { font-style: normal; color: var(--text-3); }
+  .comp-meta   { font-size: 10px; color: var(--text-3); margin-top: 4px; }
+
+  /* ── 프로토타입 ── */
+  .proto-wrap {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    aspect-ratio: 16/10; width: 100%;
+  }
+  .proto-wrap iframe { width: 100%; height: 100%; border: none; }
+  .proto-hint { text-align: center; padding: 12px; font-size: 11px; color: var(--text-3); }
+
+  /* ── 빈 상태 ── */
+  .empty-state {
+    text-align: center; padding: 48px 24px;
+    color: var(--text-3); font-size: 13px;
+  }
+  .empty-state .icon { font-size: 32px; margin-bottom: 8px; }
+
   /* ── 푸터 ── */
   .footer {
     text-align: center; padding: 24px;
@@ -132,26 +188,25 @@
 <header class="header">
   <div class="header-left">
     <h1>Design System Preview</h1>
-    <p>biancaroh0424/designsystem-test · design/tokens · 2026. 5. 20. PM 6:24:13 기준</p>
+    <p>biancaroh0424/designsystem-test · design/tokens · 2026. 5. 20. PM 10:27:57 기준</p>
   </div>
   <div class="stats">
-    <div class="stat">
-      <div class="num">185</div>
-      <div class="label">Tokens</div>
-    </div>
-    <div class="stat">
-      <div class="num">12</div>
-      <div class="label">Collections</div>
-    </div>
-    <div class="stat">
-      <div class="num">63</div>
-      <div class="label">Colors</div>
-    </div>
+    <div class="stat"><div class="num">186</div><div class="label">Tokens</div></div>
+    <div class="stat"><div class="num">13</div><div class="label">Components</div></div>
+    <div class="stat"><div class="num">63</div><div class="label">Colors</div></div>
   </div>
 </header>
 
+<nav class="nav">
+  <button class="nav-tab active" onclick="showTab('tokens', this)">🎨 Tokens</button>
+  <button class="nav-tab" onclick="showTab('components', this)">🧩 Components</button>
+  <button class="nav-tab" onclick="showTab('prototype', this)">📱 Prototype</button>
+</nav>
+
 <main class="main">
-  <section class="collection">
+
+  <div id="tab-tokens" class="tab-panel active">
+    <section class="collection">
     <h2 class="collection-title">border-radius</h2><table class="token-table">
       <thead><tr><th>Token</th><th>Value</th><th>Type</th></tr></thead>
       <tbody><tr>
@@ -477,6 +532,10 @@
     <h2 class="collection-title">global/spacing</h2><table class="token-table">
       <thead><tr><th>Token</th><th>Value</th><th>Type</th></tr></thead>
       <tbody><tr>
+        <td><code>35</code></td>
+        <td><span class="spacing-bar" style="width:14px"></span><span class="val-text">14</span></td>
+        <td><span class="type-badge type-number">number</span></td>
+      </tr><tr>
         <td><code>spacing.0</code></td>
         <td><span class="spacing-bar" style="width:0px"></span><span class="val-text">0</span></td>
         <td><span class="type-badge type-spacing">spacing</span></td>
@@ -1120,11 +1179,158 @@
         <td><span class="spacing-bar" style="width:0.800000011920929px"></span><span class="val-text">0.800000011920929</span></td>
         <td><span class="type-badge type-spacing">spacing</span></td>
       </tr></tbody></table></section>
+  </div>
+
+  <div id="tab-components" class="tab-panel">
+    <section class="collection">
+    <h2 class="collection-title" style="--dot:#f59e0b">Components</h2>
+    <div class="comp-grid"><div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">Button</span>
+          <span class="comp-group">General</span>
+        </div>
+        
+        <div class="tag-row"><span class="variant-tag">type: destructive, ghost, primary, secondary</span><span class="variant-tag">status: Default, disabled</span><span class="variant-tag">iconexists: false, true</span><span class="variant-tag">iconDirection: undefined, left, right</span></div>
+        <div class="tag-row"><span class="prop-tag">type <em>variant</em></span><span class="prop-tag">status <em>variant</em></span><span class="prop-tag">iconexists <em>variant</em></span><span class="prop-tag">iconDirection <em>variant</em></span></div>
+        <div class="comp-meta">1145 × 844px</div>
+      </div><div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">alert-circle</span>
+          <span class="comp-group">General</span>
+        </div>
+        
+        
+        
+        <div class="comp-meta">24 × 24px</div>
+      </div><div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">alert-triangle</span>
+          <span class="comp-group">General</span>
+        </div>
+        
+        
+        
+        <div class="comp-meta">24 × 24px</div>
+      </div><div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">check-circle</span>
+          <span class="comp-group">General</span>
+        </div>
+        
+        
+        
+        <div class="comp-meta">24 × 24px</div>
+      </div><div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">zap</span>
+          <span class="comp-group">General</span>
+        </div>
+        
+        
+        
+        <div class="comp-meta">24 × 24px</div>
+      </div><div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">Social icon</span>
+          <span class="comp-group">General</span>
+        </div>
+        
+        <div class="tag-row"><span class="variant-tag">Platform: Apple, Clubhouse, Discord, Dribbble, Facebook, Figma, Google, Instagram, LinkedIn, Pinterest, GitHub, Reddit, Signal, Snapchat, Telegram, TikTok, Tumblr, X (Twitter), YouTube, AngelList, Layers</span><span class="variant-tag">State: Default, Hover</span><span class="variant-tag">Style: Brand, Gray, White</span></div>
+        <div class="tag-row"><span class="prop-tag">Platform <em>variant</em></span><span class="prop-tag">State <em>variant</em></span><span class="prop-tag">Style <em>variant</em></span></div>
+        <div class="comp-meta">456 × 544px</div>
+      </div><div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">Featured icon</span>
+          <span class="comp-group">General</span>
+        </div>
+        
+        <div class="tag-row"><span class="variant-tag">Size: xs, sm, md, lg, xl</span><span class="variant-tag">Color: Brand, Gray, Error, Warning, Success</span><span class="variant-tag">Theme: Light circle, Light circle outline, Dark circle, Light square, Mid square, Dark square, Modern</span></div>
+        <div class="tag-row"><span class="prop-tag">Size <em>variant</em></span><span class="prop-tag">Color <em>variant</em></span><span class="prop-tag">Theme <em>variant</em></span></div>
+        <div class="comp-meta">360 × 1576px</div>
+      </div><div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">Payment method icon</span>
+          <span class="comp-group">General</span>
+        </div>
+        
+        <div class="tag-row"><span class="variant-tag">Size: sm, md</span><span class="variant-tag">Payment method: AMEX, Affirm, Alipay, Amazon, ApplePay, Bancontact, Bitcoin, BitcoinCash, Bitpay, Citadele, DinersClub, Discover, Elo, Etherium, Forbrugsforeningen, GooglePay, Giropay, Ideal, Interac, JCB, Klarna, Lightcoin, Maestro, Mastercard, PayPal, Payoneer, Paysafe, Qiwi, SEPA, Shop Pay, Skrill, Sofort, Stripe, UnionPay, Verifone, Visa, WeChat, Webmoney, Yandex</span></div>
+        <div class="tag-row"><span class="prop-tag">Size <em>variant</em></span><span class="prop-tag">Payment method <em>variant</em></span></div>
+        <div class="comp-meta">320 × 977px</div>
+      </div><div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">Star icon</span>
+          <span class="comp-group">General</span>
+        </div>
+        
+        <div class="tag-row"><span class="variant-tag">Fill: 0%, 10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%</span></div>
+        <div class="tag-row"><span class="prop-tag">Fill <em>variant</em></span></div>
+        <div class="comp-meta">412 × 52px</div>
+      </div><div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">Check icon</span>
+          <span class="comp-group">General</span>
+        </div>
+        
+        <div class="tag-row"><span class="variant-tag">Size: xs, sm, md, lg, xl, 2xl</span><span class="variant-tag">Color: Brand, Gray, Success</span></div>
+        <div class="tag-row"><span class="prop-tag">Size <em>variant</em></span><span class="prop-tag">Color <em>variant</em></span></div>
+        <div class="comp-meta">292 × 184px</div>
+      </div><div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">google meet</span>
+          <span class="comp-group">General</span>
+        </div>
+        
+        
+        
+        <div class="comp-meta">32 × 32px</div>
+      </div><div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">Check item text</span>
+          <span class="comp-group">General</span>
+        </div>
+        
+        <div class="tag-row"><span class="variant-tag">Size: sm, md, lg, xl</span><span class="variant-tag">Color: Brand, Success</span><span class="variant-tag">Breakpoint: Desktop, Mobile</span></div>
+        <div class="tag-row"><span class="prop-tag">Size <em>variant</em></span><span class="prop-tag">Color <em>variant</em></span><span class="prop-tag">Breakpoint <em>variant</em></span></div>
+        <div class="comp-meta">807 × 432px</div>
+      </div><div class="comp-card">
+        <div class="comp-header">
+          <span class="comp-name">Cursor</span>
+          <span class="comp-group">General</span>
+        </div>
+        
+        <div class="tag-row"><span class="variant-tag">State: Arrow, Drag, Hand</span></div>
+        <div class="tag-row"><span class="prop-tag">State <em>variant</em></span></div>
+        <div class="comp-meta">108 × 52px</div>
+      </div></div></section>
+  </div>
+
+  <div id="tab-prototype" class="tab-panel">
+    <section class="collection">
+      <h2 class="collection-title">Prototype</h2>
+      <div class="proto-wrap">
+        <iframe
+          src="https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/proto/lAXzAARFQVK4n2CsBcVxYk/relevance-ai-clone?type=design%26scaling=scale-down-width%26page-id=0%3A1"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <p class="proto-hint">Figma 계정으로 로그인되어 있어야 보여요 · <a href="https://www.figma.com/design/lAXzAARFQVK4n2CsBcVxYk" target="_blank">Figma에서 열기 →</a></p>
+    </section>
+  </div>
+
 </main>
 
 <footer class="footer">
-  Generated by Token Sync · 2026. 5. 20. PM 6:24:13
+  Generated by Token Sync · 2026. 5. 20. PM 10:27:57
 </footer>
+
+<script>
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
 
 </body>
 </html>
