@@ -1,0 +1,12 @@
+{
+  "name": "Token Sync 🔄",
+  "id": "token-sync-figma-github",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["https://api.github.com"],
+    "reasoning": "GitHub API로 디자인 토큰을 동기화합니다"
+  }
+}

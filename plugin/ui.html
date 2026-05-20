@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px;
+    color: #1a1a1a;
+    background: #fff;
+    height: 520px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── 헤더 ─── */
+  .header {
+    padding: 14px 16px 0;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .header h1 { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+
+  /* ── 탭 ─── */
+  .tabs { display: flex; gap: 2px; }
+  .tab {
+    padding: 6px 14px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 12px;
+    color: #666;
+    border-bottom: 2px solid transparent;
+    transition: all .15s;
+  }
+  .tab.active { color: #0d0d0d; border-bottom-color: #0d0d0d; font-weight: 500; }
+
+  /* ── 본문 ─── */
+  .content { flex: 1; overflow-y: auto; padding: 16px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── 폼 ─── */
+  .field { margin-bottom: 12px; }
+  label { display: block; font-size: 11px; font-weight: 500; color: #444; margin-bottom: 4px; }
+  input {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid #d4d4d4;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: inherit;
+    color: #1a1a1a;
+    outline: none;
+    transition: border-color .15s;
+  }
+  input:focus { border-color: #0d0d0d; }
+  input::placeholder { color: #aaa; }
+
+  .hint { font-size: 10px; color: #999; margin-top: 3px; }
+
+  /* ── 버튼 ─── */
+  .btn-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .btn {
+    flex: 1;
+    padding: 9px;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity .15s, transform .1s;
+    font-family: inherit;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-primary { background: #0d0d0d; color: #fff; }
+  .btn-secondary { background: #f0f0f0; color: #1a1a1a; }
+  .btn-save { background: #0d0d0d; color: #fff; width: 100%; padding: 9px; border: none; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; }
+
+  /* ── 상태 로그 ─── */
+  .log {
+    background: #f7f7f7;
+    border-radius: 8px;
+    padding: 10px;
+    min-height: 140px;
+    max-height: 220px;
+    overflow-y: auto;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+  .log-entry { display: flex; gap: 8px; padding: 2px 0; }
+  .log-entry .time { color: #999; flex-shrink: 0; }
+  .log-entry.ok .msg { color: #12a05c; }
+  .log-entry.err .msg { color: #e5343a; }
+  .log-entry.info .msg { color: #444; }
+  .log-empty { color: #bbb; text-align: center; padding: 20px 0; }
+
+  /* ── 구분선 ─── */
+  .divider { border: none; border-top: 1px solid #eee; margin: 14px 0; }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: 10px;
+  }
+
+  /* ── 배지 ─── */
+  .badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 99px;
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .badge-green { background: #e6f9f0; color: #0a7a45; }
+  .badge-gray  { background: #f0f0f0; color: #666; }
+
+  /* ── 스피너 ─── */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border: 2px solid #ddd;
+    border-top-color: #0d0d0d;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Token Sync 🔄</h1>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('sync')">Sync</button>
+    <button class="tab" onclick="switchTab('settings')">Settings</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ── Sync 패널 ── -->
+  <div id="panel-sync" class="panel active">
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btn-push" onclick="push()">↑ Push to GitHub</button>
+      <button class="btn btn-secondary" id="btn-pull" onclick="pull()">↓ Pull from GitHub</button>
+    </div>
+    <p style="font-size:10px;color:#999;margin-bottom:14px;line-height:1.5;">
+      <b>Push</b>: Figma 변수 → GitHub design/tokens 브랜치<br>
+      <b>Pull</b>: GitHub design/tokens 브랜치 → Figma 변수 업데이트
+    </p>
+
+    <div class="section-title">Log</div>
+    <div class="log" id="log">
+      <div class="log-empty">아직 동기화 기록이 없어요</div>
+    </div>
+  </div>
+
+  <!-- ── Settings 패널 ── -->
+  <div id="panel-settings" class="panel">
+    <div class="field">
+      <label>GitHub Personal Access Token</label>
+      <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" />
+      <div class="hint">Settings → Developer settings → Personal access tokens (Contents: Read & write)</div>
+    </div>
+    <div class="field">
+      <label>Repository</label>
+      <input type="text" id="gh-repo" placeholder="biancaroh0424/designsystem-test" />
+    </div>
+    <div class="field">
+      <label>Branch</label>
+      <input type="text" id="gh-branch" placeholder="design/tokens" />
+    </div>
+    <div class="field">
+      <label>Token folder path</label>
+      <input type="text" id="gh-path" placeholder="tokens" />
+    </div>
+    <button class="btn-save" onclick="saveSettings()">저장</button>
+    <div id="save-msg" style="text-align:center;font-size:11px;color:#12a05c;margin-top:8px;min-height:16px;"></div>
+  </div>
+
+</div>
+
+<script>
+// ── 상태 ──────────────────────────────────────────────────────────────────────
+let settings = {};
+let busy = false;
+
+// ── 탭 전환 ───────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', ['sync','settings'][i] === name);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`panel-${name}`).classList.add('active');
+}
+
+// ── 로그 ──────────────────────────────────────────────────────────────────────
+function log(msg, type = 'info') {
+  const logEl = document.getElementById('log');
+  const empty = logEl.querySelector('.log-empty');
+  if (empty) empty.remove();
+
+  const now = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const entry = document.createElement('div');
+  entry.className = `log-entry ${type}`;
+  entry.innerHTML = `<span class="time">${now}</span><span class="msg">${msg}</span>`;
+  logEl.prepend(entry);
+}
+
+function setLoading(on) {
+  busy = on;
+  ['btn-push','btn-pull'].forEach(id => {
+    document.getElementById(id).disabled = on;
+  });
+}
+
+// ── GitHub API ────────────────────────────────────────────────────────────────
+async function ghRequest(path, method = 'GET', body = null) {
+  const url = `https://api.github.com/repos/${settings.repo}${path}`;
+  const opts = {
+    method,
+    headers: {
+      'Authorization': `token ${settings.token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+    },
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub API ${res.status}`);
+  }
+  return res.status === 204 ? null : res.json();
+}
+
+// 재귀적으로 tokens/ 디렉토리 읽기
+async function readTokenDir(dirPath) {
+  const items = await ghRequest(`/contents/${dirPath}?ref=${settings.branch}`);
+  const result = {};
+  for (const item of items) {
+    if (item.name.startsWith('$')) continue;
+    if (item.type === 'dir') {
+      const sub = await readTokenDir(item.path);
+      for (const [k, v] of Object.entries(sub)) result[k] = v;
+    } else if (item.name.endsWith('.json')) {
+      const file = await ghRequest(`/contents/${item.path}?ref=${settings.branch}`);
+      const content = JSON.parse(atob(file.content.replace(/\n/g, '')));
+      // 컬렉션 키: "tokens/global/color.json" → "global/color"
+      const key = item.path
+        .replace(`${settings.path}/`, '')
+        .replace('.json', '');
+      result[key] = content;
+    }
+  }
+  return result;
+}
+
+// ── Push (Figma → GitHub) ──────────────────────────────────────────────────────
+async function push() {
+  if (busy) return;
+  if (!validate()) return;
+
+  setLoading(true);
+  log('Figma 변수 읽는 중...', 'info');
+
+  parent.postMessage({ pluginMessage: { type: 'READ_VARIABLES' } }, '*');
+}
+
+async function doPush(tokens) {
+  try {
+    const collections = Object.entries(tokens);
+    if (collections.length === 0) {
+      log('⚠️  Figma에 변수가 없어요. 먼저 Variables를 만들어주세요.', 'err');
+      return;
+    }
+
+    log(`${collections.length}개 컬렉션 발견 → GitHub에 쓰는 중...`, 'info');
+
+    for (const [key, tokenData] of collections) {
+      const filePath = `${settings.path}/${key}.json`;
+      const content = btoa(unescape(encodeURIComponent(
+        JSON.stringify(tokenData, null, 2) + '\n'
+      )));
+
+      // 기존 파일 SHA 조회 (업데이트 시 필요)
+      let sha;
+      try {
+        const existing = await ghRequest(`/contents/${filePath}?ref=${settings.branch}`);
+        sha = existing.sha;
+      } catch (_) { /* 신규 파일 */ }
+
+      const body = {
+        message: `chore: update ${key} tokens from Figma [skip-figma-sync]`,
+        content,
+        branch: settings.branch,
+      };
+      if (sha) body.sha = sha;
+
+      await ghRequest(`/contents/${filePath}`, 'PUT', body);
+      log(`✅ ${filePath} 저장됨`, 'ok');
+    }
+
+    log('🚀 Push 완료! GitHub Actions가 자동으로 처리해요.', 'ok');
+  } catch (e) {
+    log(`❌ ${e.message}`, 'err');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ── Pull (GitHub → Figma) ──────────────────────────────────────────────────────
+async function pull() {
+  if (busy) return;
+  if (!validate()) return;
+
+  setLoading(true);
+  log('GitHub에서 토큰 읽는 중...', 'info');
+
+  try {
+    const tokens = await readTokenDir(settings.path);
+    const count = Object.keys(tokens).length;
+
+    if (count === 0) {
+      log('⚠️  GitHub에 토큰 파일이 없어요.', 'err');
+      setLoading(false);
+      return;
+    }
+
+    log(`${count}개 컬렉션 발견 → Figma에 쓰는 중...`, 'info');
+    parent.postMessage({ pluginMessage: { type: 'WRITE_VARIABLES', tokens } }, '*');
+  } catch (e) {
+    log(`❌ ${e.message}`, 'err');
+    setLoading(false);
+  }
+}
+
+// ── 설정 ──────────────────────────────────────────────────────────────────────
+function validate() {
+  const missing = [];
+  if (!settings.token) missing.push('GitHub Token');
+  if (!settings.repo)  missing.push('Repository');
+  if (missing.length) {
+    log(`❌ Settings에서 먼저 입력해주세요: ${missing.join(', ')}`, 'err');
+    switchTab('settings');
+    return false;
+  }
+  return true;
+}
+
+function saveSettings() {
+  const data = {
+    token:  document.getElementById('gh-token').value.trim(),
+    repo:   document.getElementById('gh-repo').value.trim(),
+    branch: document.getElementById('gh-branch').value.trim() || 'design/tokens',
+    path:   document.getElementById('gh-path').value.trim() || 'tokens',
+  };
+  settings = data;
+  parent.postMessage({ pluginMessage: { type: 'SAVE_SETTINGS', data } }, '*');
+}
+
+function loadSettingsToForm(data) {
+  settings = data;
+  document.getElementById('gh-token').value  = data.token  ?? '';
+  document.getElementById('gh-repo').value   = data.repo   ?? 'biancaroh0424/designsystem-test';
+  document.getElementById('gh-branch').value = data.branch ?? 'design/tokens';
+  document.getElementById('gh-path').value   = data.path   ?? 'tokens';
+}
+
+// ── Figma plugin 메시지 수신 ──────────────────────────────────────────────────
+window.onmessage = (event) => {
+  const msg = event.data.pluginMessage;
+  if (!msg) return;
+
+  switch (msg.type) {
+    case 'SETTINGS':
+      loadSettingsToForm(msg.data);
+      break;
+
+    case 'SETTINGS_SAVED':
+      document.getElementById('save-msg').textContent = '✅ 저장됐어요!';
+      setTimeout(() => document.getElementById('save-msg').textContent = '', 2000);
+      break;
+
+    case 'VARIABLES_DATA':
+      doPush(msg.tokens);
+      break;
+
+    case 'WRITE_DONE':
+      log(`✅ Pull 완료! ${msg.created}개 생성, ${msg.updated}개 업데이트됐어요.`, 'ok');
+      setLoading(false);
+      break;
+
+    case 'ERROR':
+      log(`❌ ${msg.message}`, 'err');
+      setLoading(false);
+      break;
+  }
+};
+
+// 초기 설정 로드
+parent.postMessage({ pluginMessage: { type: 'LOAD_SETTINGS' } }, '*');
+</script>
+</body>
+</html>
