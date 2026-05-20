@@ -281,21 +281,42 @@ async function push() {
 async function doPush(tokens) {
   try {
     const collections = Object.entries(tokens);
-    log(`토큰 ${collections.length}개 컬렉션 → GitHub에 쓰는 중...`, 'info');
+    log(`토큰 ${collections.length}개 컬렉션 비교 중...`, 'info');
 
+    let changed = 0;
     for (const [key, tokenData] of collections) {
       const filePath = `${settings.path}/${key}.json`;
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify(tokenData, null, 2) + '\n')));
-      let sha;
-      try { const ex = await ghRequest(`/contents/${filePath}?ref=${settings.branch}`); sha = ex.sha; } catch (_) {}
-      const body = { message: `chore: update ${key} tokens from Figma [skip-figma-sync]`, content, branch: settings.branch };
-      if (sha) body.sha = sha;
+      const newContent = JSON.stringify(tokenData, null, 2) + '\n';
+
+      // 기존 파일 내용 가져와서 비교
+      let existingSha = null;
+      let existingContent = null;
+      try {
+        const ex = await ghRequest(`/contents/${filePath}?ref=${settings.branch}`);
+        existingSha = ex.sha;
+        existingContent = decodeURIComponent(escape(atob(ex.content.replace(/\n/g, ''))));
+      } catch (_) {}
+
+      // 내용이 같으면 스킵
+      if (existingContent === newContent) {
+        log(`⏭ tokens/${key}.json 변경 없음`, 'info');
+        continue;
+      }
+
+      const encoded = btoa(unescape(encodeURIComponent(newContent)));
+      const body = { message: `chore: update ${key} tokens from Figma [skip-figma-sync]`, content: encoded, branch: settings.branch };
+      if (existingSha) body.sha = existingSha;
       await ghRequest(`/contents/${filePath}`, 'PUT', body);
-      log(`✅ tokens/${key}.json 저장됨`, 'ok');
+      log(`✅ tokens/${key}.json 업데이트됨`, 'ok');
+      changed++;
+    }
+
+    if (changed === 0) {
+      log('✨ 토큰 변경사항 없음', 'info');
     }
 
     // 이어서 컴포넌트 읽기
-    log('Figma 컴포넌트 읽는 중...', 'info');
+    log('Figma 컴포넌트 비교 중...', 'info');
     parent.postMessage({ pluginMessage: { type: 'READ_COMPONENTS' } }, '*');
   } catch (e) {
     log(`❌ ${e.message}`, 'err');
@@ -315,17 +336,26 @@ async function doPushComponents(components) {
       return;
     }
 
-    log(`컴포넌트 ${totalCount}개 → GitHub에 쓰는 중...`, 'info');
+    log(`컴포넌트 ${totalCount}개 비교 중...`, 'info');
 
-    // 1) 스펙 JSON 저장
+    // 1) 스펙 JSON — 변경된 경우만 저장
     const specPath = 'components/specs/components.json';
-    const specContent = btoa(unescape(encodeURIComponent(JSON.stringify(components, null, 2) + '\n')));
-    let specSha;
-    try { const ex = await ghRequest(`/contents/${specPath}?ref=${settings.branch}`); specSha = ex.sha; } catch (_) {}
-    const specBody = { message: 'chore: update component specs from Figma [skip-figma-sync]', content: specContent, branch: settings.branch };
-    if (specSha) specBody.sha = specSha;
-    await ghRequest(`/contents/${specPath}`, 'PUT', specBody);
-    log(`✅ components/specs/components.json 저장됨`, 'ok');
+    const newSpecContent = JSON.stringify(components, null, 2) + '\n';
+    let specSha = null, existingSpec = null;
+    try {
+      const ex = await ghRequest(`/contents/${specPath}?ref=${settings.branch}`);
+      specSha = ex.sha;
+      existingSpec = decodeURIComponent(escape(atob(ex.content.replace(/\n/g, ''))));
+    } catch (_) {}
+
+    if (existingSpec === newSpecContent) {
+      log('⏭ components/specs/components.json 변경 없음', 'info');
+    } else {
+      const specBody = { message: 'chore: update component specs from Figma [skip-figma-sync]', content: btoa(unescape(encodeURIComponent(newSpecContent))), branch: settings.branch };
+      if (specSha) specBody.sha = specSha;
+      await ghRequest(`/contents/${specPath}`, 'PUT', specBody);
+      log(`✅ components/specs/components.json 업데이트됨`, 'ok');
+    }
 
     // 2) React 스텁 생성 + 저장
     for (const [group, comps] of Object.entries(components)) {
