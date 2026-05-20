@@ -51,6 +51,550 @@
       ],
       "width": 814,
       "height": 154
+    },
+    {
+      "name": "alert-circle",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT",
+      "variants": [],
+      "props": [],
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "alert-triangle",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT",
+      "variants": [],
+      "props": [],
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "check-circle",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT",
+      "variants": [],
+      "props": [],
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "zap",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT",
+      "variants": [],
+      "props": [],
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "Social icon",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT_SET",
+      "variants": [
+        {
+          "name": "Platform",
+          "values": [
+            "Apple",
+            "Clubhouse",
+            "Discord",
+            "Dribbble",
+            "Facebook",
+            "Figma",
+            "Google",
+            "Instagram",
+            "LinkedIn",
+            "Pinterest",
+            "GitHub",
+            "Reddit",
+            "Signal",
+            "Snapchat",
+            "Telegram",
+            "TikTok",
+            "Tumblr",
+            "X (Twitter)",
+            "YouTube",
+            "AngelList",
+            "Layers"
+          ]
+        },
+        {
+          "name": "State",
+          "values": [
+            "Default",
+            "Hover"
+          ]
+        },
+        {
+          "name": "Style",
+          "values": [
+            "Brand",
+            "Gray",
+            "White"
+          ]
+        }
+      ],
+      "props": [
+        {
+          "name": "Platform",
+          "type": "VARIANT",
+          "defaultValue": "Facebook",
+          "variantOptions": [
+            "Apple",
+            "Clubhouse",
+            "Discord",
+            "Dribbble",
+            "Facebook",
+            "Figma",
+            "Google",
+            "Instagram",
+            "LinkedIn",
+            "Pinterest",
+            "GitHub",
+            "Reddit",
+            "Signal",
+            "Snapchat",
+            "Telegram",
+            "TikTok",
+            "Tumblr",
+            "X (Twitter)",
+            "YouTube",
+            "AngelList",
+            "Layers"
+          ]
+        },
+        {
+          "name": "State",
+          "type": "VARIANT",
+          "defaultValue": "Default",
+          "variantOptions": [
+            "Default",
+            "Hover"
+          ]
+        },
+        {
+          "name": "Style",
+          "type": "VARIANT",
+          "defaultValue": "Brand",
+          "variantOptions": [
+            "Brand",
+            "Gray",
+            "White"
+          ]
+        }
+      ],
+      "width": 456,
+      "height": 544
+    },
+    {
+      "name": "Featured icon",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT_SET",
+      "variants": [
+        {
+          "name": "Size",
+          "values": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ]
+        },
+        {
+          "name": "Color",
+          "values": [
+            "Brand",
+            "Gray",
+            "Error",
+            "Warning",
+            "Success"
+          ]
+        },
+        {
+          "name": "Theme",
+          "values": [
+            "Light circle",
+            "Light circle outline",
+            "Dark circle",
+            "Light square",
+            "Mid square",
+            "Dark square",
+            "Modern"
+          ]
+        }
+      ],
+      "props": [
+        {
+          "name": "Size",
+          "type": "VARIANT",
+          "defaultValue": "xs",
+          "variantOptions": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ]
+        },
+        {
+          "name": "Color",
+          "type": "VARIANT",
+          "defaultValue": "Brand",
+          "variantOptions": [
+            "Brand",
+            "Gray",
+            "Error",
+            "Warning",
+            "Success"
+          ]
+        },
+        {
+          "name": "Theme",
+          "type": "VARIANT",
+          "defaultValue": "Light circle",
+          "variantOptions": [
+            "Light circle",
+            "Light circle outline",
+            "Dark circle",
+            "Light square",
+            "Mid square",
+            "Dark square",
+            "Modern"
+          ]
+        }
+      ],
+      "width": 360,
+      "height": 1576
+    },
+    {
+      "name": "Payment method icon",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT_SET",
+      "variants": [
+        {
+          "name": "Size",
+          "values": [
+            "sm",
+            "md"
+          ]
+        },
+        {
+          "name": "Payment method",
+          "values": [
+            "AMEX",
+            "Affirm",
+            "Alipay",
+            "Amazon",
+            "ApplePay",
+            "Bancontact",
+            "Bitcoin",
+            "BitcoinCash",
+            "Bitpay",
+            "Citadele",
+            "DinersClub",
+            "Discover",
+            "Elo",
+            "Etherium",
+            "Forbrugsforeningen",
+            "GooglePay",
+            "Giropay",
+            "Ideal",
+            "Interac",
+            "JCB",
+            "Klarna",
+            "Lightcoin",
+            "Maestro",
+            "Mastercard",
+            "PayPal",
+            "Payoneer",
+            "Paysafe",
+            "Qiwi",
+            "SEPA",
+            "Shop Pay",
+            "Skrill",
+            "Sofort",
+            "Stripe",
+            "UnionPay",
+            "Verifone",
+            "Visa",
+            "WeChat",
+            "Webmoney",
+            "Yandex"
+          ]
+        }
+      ],
+      "props": [
+        {
+          "name": "Size",
+          "type": "VARIANT",
+          "defaultValue": "sm",
+          "variantOptions": [
+            "sm",
+            "md"
+          ]
+        },
+        {
+          "name": "Payment method",
+          "type": "VARIANT",
+          "defaultValue": "Visa",
+          "variantOptions": [
+            "AMEX",
+            "Affirm",
+            "Alipay",
+            "Amazon",
+            "ApplePay",
+            "Bancontact",
+            "Bitcoin",
+            "BitcoinCash",
+            "Bitpay",
+            "Citadele",
+            "DinersClub",
+            "Discover",
+            "Elo",
+            "Etherium",
+            "Forbrugsforeningen",
+            "GooglePay",
+            "Giropay",
+            "Ideal",
+            "Interac",
+            "JCB",
+            "Klarna",
+            "Lightcoin",
+            "Maestro",
+            "Mastercard",
+            "PayPal",
+            "Payoneer",
+            "Paysafe",
+            "Qiwi",
+            "SEPA",
+            "Shop Pay",
+            "Skrill",
+            "Sofort",
+            "Stripe",
+            "UnionPay",
+            "Verifone",
+            "Visa",
+            "WeChat",
+            "Webmoney",
+            "Yandex"
+          ]
+        }
+      ],
+      "width": 320,
+      "height": 977
+    },
+    {
+      "name": "Star icon",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT_SET",
+      "variants": [
+        {
+          "name": "Fill",
+          "values": [
+            "0%",
+            "10%",
+            "20%",
+            "30%",
+            "40%",
+            "50%",
+            "60%",
+            "70%",
+            "80%",
+            "90%",
+            "100%"
+          ]
+        }
+      ],
+      "props": [
+        {
+          "name": "Fill",
+          "type": "VARIANT",
+          "defaultValue": "0%",
+          "variantOptions": [
+            "0%",
+            "10%",
+            "20%",
+            "30%",
+            "40%",
+            "50%",
+            "60%",
+            "70%",
+            "80%",
+            "90%",
+            "100%"
+          ]
+        }
+      ],
+      "width": 412,
+      "height": 52
+    },
+    {
+      "name": "Check icon",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT_SET",
+      "variants": [
+        {
+          "name": "Size",
+          "values": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+            "2xl"
+          ]
+        },
+        {
+          "name": "Color",
+          "values": [
+            "Brand",
+            "Gray",
+            "Success"
+          ]
+        }
+      ],
+      "props": [
+        {
+          "name": "Size",
+          "type": "VARIANT",
+          "defaultValue": "xs",
+          "variantOptions": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+            "2xl"
+          ]
+        },
+        {
+          "name": "Color",
+          "type": "VARIANT",
+          "defaultValue": "Brand",
+          "variantOptions": [
+            "Brand",
+            "Gray",
+            "Success"
+          ]
+        }
+      ],
+      "width": 292,
+      "height": 184
+    },
+    {
+      "name": "google meet",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT",
+      "variants": [],
+      "props": [],
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "Check item text",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT_SET",
+      "variants": [
+        {
+          "name": "Size",
+          "values": [
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ]
+        },
+        {
+          "name": "Color",
+          "values": [
+            "Brand",
+            "Success"
+          ]
+        },
+        {
+          "name": "Breakpoint",
+          "values": [
+            "Desktop",
+            "Mobile"
+          ]
+        }
+      ],
+      "props": [
+        {
+          "name": "Size",
+          "type": "VARIANT",
+          "defaultValue": "sm",
+          "variantOptions": [
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ]
+        },
+        {
+          "name": "Color",
+          "type": "VARIANT",
+          "defaultValue": "Brand",
+          "variantOptions": [
+            "Brand",
+            "Success"
+          ]
+        },
+        {
+          "name": "Breakpoint",
+          "type": "VARIANT",
+          "defaultValue": "Desktop",
+          "variantOptions": [
+            "Desktop",
+            "Mobile"
+          ]
+        }
+      ],
+      "width": 807,
+      "height": 432
+    },
+    {
+      "name": "Cursor",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT_SET",
+      "variants": [
+        {
+          "name": "State",
+          "values": [
+            "Arrow",
+            "Drag",
+            "Hand"
+          ]
+        }
+      ],
+      "props": [
+        {
+          "name": "State",
+          "type": "VARIANT",
+          "defaultValue": "Hand",
+          "variantOptions": [
+            "Arrow",
+            "Drag",
+            "Hand"
+          ]
+        }
+      ],
+      "width": 108,
+      "height": 52
     }
   ]
 }
