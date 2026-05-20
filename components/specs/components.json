@@ -12,9 +12,7 @@
             "destructive",
             "ghost",
             "primary",
-            "secondary",
-            "iconLeft",
-            "iconRight"
+            "secondary"
           ]
         },
         {
@@ -22,6 +20,21 @@
           "values": [
             "Default",
             "disabled"
+          ]
+        },
+        {
+          "name": "iconexists",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        {
+          "name": "iconDirection",
+          "values": [
+            "undefined",
+            "left",
+            "right"
           ]
         }
       ],
@@ -34,9 +47,7 @@
             "destructive",
             "ghost",
             "primary",
-            "secondary",
-            "iconLeft",
-            "iconRight"
+            "secondary"
           ]
         },
         {
@@ -47,10 +58,29 @@
             "Default",
             "disabled"
           ]
+        },
+        {
+          "name": "iconexists",
+          "type": "VARIANT",
+          "defaultValue": "false",
+          "variantOptions": [
+            "false",
+            "true"
+          ]
+        },
+        {
+          "name": "iconDirection",
+          "type": "VARIANT",
+          "defaultValue": "undefined",
+          "variantOptions": [
+            "undefined",
+            "left",
+            "right"
+          ]
         }
       ],
-      "width": 814,
-      "height": 154
+      "width": 1145,
+      "height": 844
     },
     {
       "name": "alert-circle",
