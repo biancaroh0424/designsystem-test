@@ -1,6 +1,16 @@
 {
   "General": [
     {
+      "name": "Avatar",
+      "group": "General",
+      "description": "",
+      "type": "COMPONENT",
+      "variants": [],
+      "props": [],
+      "width": 32,
+      "height": 32
+    },
+    {
       "name": "Button",
       "group": "General",
       "description": "",
@@ -19,7 +29,8 @@
           "name": "status",
           "values": [
             "Default",
-            "disabled"
+            "disabled",
+            "hovered"
           ]
         },
         {
@@ -31,6 +42,15 @@
         },
         {
           "name": "iconDirection",
+          "values": [
+            "undefined",
+            "left",
+            "right",
+            "both"
+          ]
+        },
+        {
+          "name": "iconConcentration",
           "values": [
             "undefined",
             "left",
@@ -56,7 +76,8 @@
           "defaultValue": "Default",
           "variantOptions": [
             "Default",
-            "disabled"
+            "disabled",
+            "hovered"
           ]
         },
         {
@@ -75,12 +96,23 @@
           "variantOptions": [
             "undefined",
             "left",
+            "right",
+            "both"
+          ]
+        },
+        {
+          "name": "iconConcentration",
+          "type": "VARIANT",
+          "defaultValue": "undefined",
+          "variantOptions": [
+            "undefined",
+            "left",
             "right"
           ]
         }
       ],
-      "width": 532,
-      "height": 893
+      "width": 1734,
+      "height": 1454
     },
     {
       "name": "alert-circle",
