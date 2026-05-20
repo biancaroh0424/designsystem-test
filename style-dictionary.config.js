@@ -1,0 +1,41 @@
+export default {
+  source: ["tokens/**/*.json"],
+  platforms: {
+    css: {
+      transformGroup: "css",
+      prefix: "ds",
+      buildPath: "dist/css/",
+      files: [
+        {
+          destination: "tokens.css",
+          format: "css/variables",
+          options: { outputReferences: true }
+        }
+      ]
+    },
+    js: {
+      transformGroup: "js",
+      buildPath: "dist/js/",
+      files: [
+        {
+          destination: "tokens.js",
+          format: "javascript/es6"
+        },
+        {
+          destination: "tokens.d.ts",
+          format: "typescript/es6-declarations"
+        }
+      ]
+    },
+    json: {
+      transformGroup: "js",
+      buildPath: "dist/json/",
+      files: [
+        {
+          destination: "tokens.json",
+          format: "json/flat"
+        }
+      ]
+    }
+  }
+};

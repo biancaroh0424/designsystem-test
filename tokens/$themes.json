@@ -1,0 +1,28 @@
+[
+  {
+    "id": "light",
+    "name": "Light",
+    "selectedTokenSets": {
+      "global/color": "enabled",
+      "global/typography": "enabled",
+      "global/spacing": "enabled",
+      "global/radius": "enabled",
+      "global/shadow": "enabled",
+      "semantic": "enabled",
+      "components": "enabled"
+    }
+  },
+  {
+    "id": "dark",
+    "name": "Dark",
+    "selectedTokenSets": {
+      "global/color": "enabled",
+      "global/typography": "enabled",
+      "global/spacing": "enabled",
+      "global/radius": "enabled",
+      "global/shadow": "enabled",
+      "semantic": "enabled",
+      "components": "enabled"
+    }
+  }
+]

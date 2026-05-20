@@ -1,0 +1,37 @@
+{
+  "component": {
+    "button": {
+      "primary": {
+        "bg":         { "value": "{semantic.color.bg.brand}",    "type": "color" },
+        "text":       { "value": "{semantic.color.text.onBrand}", "type": "color" },
+        "radius":     { "value": "{borderRadius.md}",            "type": "borderRadius" },
+        "paddingX":   { "value": "{spacing.4}",                  "type": "spacing" },
+        "paddingY":   { "value": "{spacing.2}",                  "type": "spacing" }
+      },
+      "secondary": {
+        "bg":         { "value": "{semantic.color.bg.primary}",   "type": "color" },
+        "text":       { "value": "{semantic.color.text.brand}",   "type": "color" },
+        "border":     { "value": "{semantic.color.border.brand}", "type": "color" },
+        "radius":     { "value": "{borderRadius.md}",             "type": "borderRadius" },
+        "paddingX":   { "value": "{spacing.4}",                   "type": "spacing" },
+        "paddingY":   { "value": "{spacing.2}",                   "type": "spacing" }
+      }
+    },
+    "input": {
+      "bg":           { "value": "{semantic.color.bg.primary}",    "type": "color" },
+      "border":       { "value": "{semantic.color.border.primary}","type": "color" },
+      "text":         { "value": "{semantic.color.text.primary}",  "type": "color" },
+      "placeholder":  { "value": "{semantic.color.text.tertiary}", "type": "color" },
+      "radius":       { "value": "{borderRadius.md}",              "type": "borderRadius" },
+      "paddingX":     { "value": "{spacing.3}",                    "type": "spacing" },
+      "paddingY":     { "value": "{spacing.2}",                    "type": "spacing" }
+    },
+    "card": {
+      "bg":           { "value": "{semantic.color.bg.primary}",    "type": "color" },
+      "border":       { "value": "{semantic.color.border.primary}","type": "color" },
+      "radius":       { "value": "{borderRadius.xl}",              "type": "borderRadius" },
+      "shadow":       { "value": "{boxShadow.sm}",                 "type": "boxShadow" },
+      "padding":      { "value": "{spacing.6}",                    "type": "spacing" }
+    }
+  }
+}

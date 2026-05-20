@@ -1,0 +1,12 @@
+{
+  "name": "designsystem-test",
+  "version": "1.0.0",
+  "description": "Design system tokens — Figma ↔ GitHub bidirectional sync",
+  "scripts": {
+    "build:tokens": "style-dictionary build --config style-dictionary.config.js",
+    "watch:tokens": "style-dictionary build --config style-dictionary.config.js --watch"
+  },
+  "devDependencies": {
+    "style-dictionary": "^4.0.0"
+  }
+}

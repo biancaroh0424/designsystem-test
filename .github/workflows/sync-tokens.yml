@@ -1,0 +1,57 @@
+name: Sync Design Tokens
+
+on:
+  push:
+    branches:
+      - design/tokens
+    paths:
+      - "tokens/**"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build-and-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout design/tokens branch
+        uses: actions/checkout@v4
+        with:
+          ref: design/tokens
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build tokens with Style Dictionary
+        run: npm run build:tokens
+
+      - name: Create PR to main
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          branch: chore/token-sync-${{ github.sha }}
+          title: "🎨 Design token update from Figma"
+          body: |
+            ## 디자인 토큰 업데이트
+
+            Figma(Tokens Studio)에서 변경된 토큰이 자동으로 반영되었습니다.
+
+            ### 변경된 파일
+            - `tokens/` — 원본 토큰 JSON (디자이너 수정)
+            - `dist/css/tokens.css` — CSS 변수
+            - `dist/js/tokens.js` — JS/TS 모듈
+            - `dist/json/tokens.json` — 플랫 JSON
+
+            > 프론트엔드에서 검토 후 merge 해주세요.
+          commit-message: "chore: sync design tokens from Figma"
+          labels: design-tokens
+          delete-branch: true
