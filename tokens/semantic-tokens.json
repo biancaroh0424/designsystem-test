@@ -150,5 +150,31 @@
         "type": "alias"
       }
     }
+  },
+  "fill": {
+    "button": {
+      "brand": {
+        "value": "{color.brand.600}",
+        "type": "alias"
+      },
+      "secondary": {
+        "value": "{color.neutral.0}",
+        "type": "alias"
+      },
+      "secondary-hovered": {
+        "value": "{color.neutral.100}",
+        "type": "alias"
+      },
+      "brand-disabled": {
+        "value": "{color.brand.300}",
+        "type": "alias"
+      }
+    },
+    "buttin": {
+      "brand-hovered": {
+        "value": "{color.brand.700}",
+        "type": "alias"
+      }
+    }
   }
 }
