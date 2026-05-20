@@ -1,0 +1,144 @@
+{
+  "Brand": {
+    "purple-50": {
+      "value": "#f0eeff",
+      "type": "color"
+    },
+    "purple-100": {
+      "value": "#e0ddff",
+      "type": "color"
+    },
+    "purple-200": {
+      "value": "#c1bbff",
+      "type": "color"
+    },
+    "purple-300": {
+      "value": "#a29bff",
+      "type": "color"
+    },
+    "purple-400": {
+      "value": "#837aff",
+      "type": "color"
+    },
+    "purple-500": {
+      "value": "#6460ff",
+      "type": "color"
+    },
+    "purple-600": {
+      "value": "#605fff",
+      "type": "color"
+    },
+    "purple-700": {
+      "value": "#4844e0",
+      "type": "color"
+    },
+    "purple-800": {
+      "value": "#3330c2",
+      "type": "color"
+    },
+    "purple-900": {
+      "value": "#1f1da3",
+      "type": "color"
+    }
+  },
+  "Gray": {
+    "gray-50": {
+      "value": "#f9fafb",
+      "type": "color"
+    },
+    "gray-100": {
+      "value": "#f3f4f6",
+      "type": "color"
+    },
+    "gray-200": {
+      "value": "#e5e7eb",
+      "type": "color"
+    },
+    "gray-300": {
+      "value": "#d1d5db",
+      "type": "color"
+    },
+    "gray-400": {
+      "value": "#9ca3af",
+      "type": "color"
+    },
+    "gray-500": {
+      "value": "#6b7280",
+      "type": "color"
+    },
+    "gray-600": {
+      "value": "#4b5563",
+      "type": "color"
+    },
+    "gray-700": {
+      "value": "#374151",
+      "type": "color"
+    },
+    "gray-800": {
+      "value": "#1f2937",
+      "type": "color"
+    },
+    "gray-900": {
+      "value": "#111827",
+      "type": "color"
+    }
+  },
+  "Status": {
+    "green-500": {
+      "value": "#22c55e",
+      "type": "color"
+    },
+    "green-100": {
+      "value": "#dcfce7",
+      "type": "color"
+    },
+    "red-500": {
+      "value": "#ef4444",
+      "type": "color"
+    },
+    "red-100": {
+      "value": "#fee2e2",
+      "type": "color"
+    },
+    "yellow-500": {
+      "value": "#eab308",
+      "type": "color"
+    },
+    "yellow-100": {
+      "value": "#fef9c3",
+      "type": "color"
+    },
+    "blue-500": {
+      "value": "#3b82f6",
+      "type": "color"
+    },
+    "blue-100": {
+      "value": "#dbeafe",
+      "type": "color"
+    }
+  },
+  "Base": {
+    "white": {
+      "value": "#ffffff",
+      "type": "color"
+    },
+    "black": {
+      "value": "#000000",
+      "type": "color"
+    }
+  },
+  "Dark": {
+    "dark-bg": {
+      "value": "#0f1117",
+      "type": "color"
+    },
+    "dark-surface": {
+      "value": "#1a1d27",
+      "type": "color"
+    },
+    "dark-border": {
+      "value": "#2d3142",
+      "type": "color"
+    }
+  }
+}
