@@ -7,7 +7,8 @@
     "build:tokens": "style-dictionary build --config style-dictionary.config.js",
     "watch:tokens": "style-dictionary build --config style-dictionary.config.js --watch",
     "sync:from-figma": "node scripts/figma-to-tokens.js",
-    "sync:to-figma": "node scripts/tokens-to-figma.js"
+    "sync:to-figma": "node scripts/tokens-to-figma.js",
+    "preview": "node scripts/generate-preview.js && open preview/index.html"
   },
   "devDependencies": {
     "style-dictionary": "^4.0.0"

@@ -1,0 +1,34 @@
+name: Deploy Design System Preview
+
+on:
+  push:
+    branches:
+      - design/tokens
+    paths:
+      - "tokens/**"
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: design/tokens
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate preview HTML
+        run: node scripts/generate-preview.js
+
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./preview
+          publish_branch: gh-pages
+          commit_message: "deploy: update design system preview"
